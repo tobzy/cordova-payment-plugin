@@ -14,7 +14,7 @@ PaymentPlugin.prototype.makePayment = function(aString,args){
   args);
 }
 
-PaymentPlugin.prototype.loadWallet = function(aString){
+PaymentPlugin.prototype.loadWallet  = function(aString){
  exec(function success(successMessage){
           alert(successMessage);
       },
