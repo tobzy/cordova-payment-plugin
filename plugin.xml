@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    id="com.interswitchng.sdk.payment"
-    version="0.0.1">
+<plugin xmlns:android="http://schemas.android.com/apk/res/android"
+    id="com.interswitchng.sdk.payment" version="0.0.1"
+    xmlns="http://apache.org/cordova/ns/plugins/1.0">
     <name>CoolPlugin</name>
     <description>Cordova Payment Plugin on Interswitch Platform</description>
     <license>Apache 2.0</license>
@@ -10,25 +9,28 @@
     <repo></repo>
     <issue></issue>
 
-    <js-module src="www/PaymentPlugin.js" name="PaymentPlugin">
+    <js-module name="PaymentPlugin" src="www/PaymentPlugin.js">
         <clobbers target="PaymentPlugin" />
     </js-module>
 
     <!-- android -->
     <platform name="android">
-        <config-file target="res/xml/config.xml" parent="/*">
+        <config-file parent="/*" target="res/xml/config.xml">
             <feature name="PaymentPlugin" >
                 <param name="android-package" value="PaymentPlugin"/>
             </feature>
         </config-file>
         <source-file src="src/android/PaymentPlugin.java" target-dir="src/" />
-	<framework src="com.android.support:appcompat-v7:23.1.1" />
-	<framework src="com.android.support:design:23.1.1" />
-	<framework src="src/android/build.gradle" custom="true" type="gradleReference" />
-	<resource-file src="aarfile/payment-android-release.aar" target="aarfile/payment-android-release.aar" />
-	<resource-file src="aarfile/core.jar" target="aarfile/core.jar" />
-    <resource-file src="aarfile/gson-2.3.1.jar" target="aarfile/gson-2.3.1.jar" />
-	<resource-file src="aarfile/payment.jar" target="aarfile/payment.jar" />
+        <framework src="com.android.support:appcompat-v7:23.1.1" />
+        <framework src="com.android.support:design:23.1.1" />
+        <framework custom="true" src="src/android/build.gradle" type="gradleReference" />
+        <resource-file src="aarfile/payment-android-release.aar"
+            target="aarfile/payment-android-release.aar" />
+        <resource-file src="aarfile/deviceprint-release-2.2.0.aar"
+            target="aarfile/deviceprint-release-2.2.0.aar" />
+        <resource-file src="aarfile/core.jar" target="aarfile/core.jar" />
+        <resource-file src="aarfile/gson-2.3.1.jar" target="aarfile/gson-2.3.1.jar" />
+        <resource-file src="aarfile/payment.jar" target="aarfile/payment.jar" />
     </platform>
 
 </plugin>
