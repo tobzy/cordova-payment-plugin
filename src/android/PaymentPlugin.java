@@ -305,6 +305,34 @@ public class PaymentPlugin extends CordovaPlugin  {
             }
         });
     }
+    public void payWithWallet(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
+        Payment.overrideApiBase(Payment.QA_API_BASE); // used to override the payment api base url.
+        Passport.overrideApiBase(Passport.QA_API_BASE); //used to override the payment api base url.
+        activity = this.cordova.getActivity();
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    final RequestOptions options = RequestOptions.builder().setClientId("IKIA14BAEA0842CE16CA7F9FED619D3ED62A54239276").setClientSecret("Z3HnVfCEadBLZ8SYuFvIQG52E472V3BQLh4XDKmgM2A=").build();
+                    PayWithWallet payWithWallet = new PayWithWallet(activity, "1234567890", "Pay for gown", args.getString(0), "NGN", options, new IswCallback<PurchaseResponse>() {
+                        @Override
+                        public void onError(Exception error) {
+                            callbackContext.error(error.getMessage());
+                        }
+
+                        @Override
+                        public void onSuccess(PurchaseResponse response) {
+                            callbackContext.success(response.getTransactionIdentifier());
+                        }
+                    });
+                    payWithWallet.start();
+                }
+                catch (JSONException jsonException){
+                    callbackContext.error(jsonException.toString());
+                }
+            }
+        });
+    }
+
     public JSONArray convertToJSONArray(String[] paymentMethods){
         JSONArray jsonArray = new JSONArray(Arrays.asList(paymentMethods));
         return jsonArray;
