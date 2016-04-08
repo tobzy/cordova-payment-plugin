@@ -16,12 +16,18 @@ PaymentPlugin.prototype.makePayment = function(action,args){
 
 PaymentPlugin.prototype.loadWallet  = function(action, args){
  exec(function success(successMessage){
-          var paymentMethods = [];
+          var paymentMethods = new Array(successMessage.length);
           for(var i=0; i<successMessage.length; i++){
-            paymentMethods[i]=successMessage[i];
+            paymentMethods[i]=successMessage[i]+"\n";
           }
           //return paymentMethods;
-          alert(paymentMethods);
+          for(var i = 0; i < paymentMethods.length; i++) {
+              var opt = document.createElement('option');
+              opt.innerHTML = paymentMethods[i];
+              opt.value = paymentMethods[i];
+              sel.appendChild(opt);
+          }
+          //alert(paymentMethods);
       },
   function error(errorMessage){
       alert(errorMessage);
@@ -32,6 +38,18 @@ PaymentPlugin.prototype.loadWallet  = function(action, args){
 }
 
 PaymentPlugin.prototype.payWithWallet  = function(action, args){
+ exec(function success(successMessage){
+           alert(successMessage);
+       },
+   function error(errorMessage){
+       alert(errorMessage);
+   },
+   "PaymentPlugin",
+   action,
+   [args]);
+}
+
+PaymentPlugin.prototype.paymentStatus  = function(action, args){
  exec(function success(successMessage){
            alert(successMessage);
        },

@@ -25,7 +25,7 @@ import com.interswitchng.sdk.util.StringUtils;
 import com.interswitchng.sdk.util.RandomString;
 import com.interswitchng.sdk.payment.model.PurchaseResponse;
 import com.interswitchng.sdk.payment.model.PurchaseRequest;
-
+import com.interswitchng.sdk.payment.model.PaymentStatusResponse;
 import com.interswitchng.sdk.payment.model.WalletResponse;
 import com.interswitchng.sdk.payment.model.WalletRequest;
 import com.interswitchng.sdk.payment.model.PaymentMethod;
@@ -138,6 +138,21 @@ public class PaymentPlugin extends CordovaPlugin  {
             });
             return true;
         }
+        else if(action.equals("PayWithToken")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithToken(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (JSONException jsonException){
+                        callbackContext.error(jsonException.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
         else if(action.equals("PayWithCard")){
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -159,6 +174,21 @@ public class PaymentPlugin extends CordovaPlugin  {
                 public void run() {
                     try {
                         payWithCard(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (JSONException jsonException){
+                        callbackContext.error(jsonException.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("PaymentStatus")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        paymentStatus(action, args, callbackContext); //asyncronous call
                     }
                     catch (JSONException jsonException){
                         callbackContext.error(jsonException.toString());
@@ -233,7 +263,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                             } else {
                                 callbackContext.success(response.getTransactionRef());
                             }
-                           // callbackContext.success(response.getTransactionRef());
+                            // callbackContext.success(response.getTransactionRef());
                         }
                     });
                 }
@@ -390,6 +420,33 @@ public class PaymentPlugin extends CordovaPlugin  {
                         }
                     });
                     validateCard.start();
+                }
+                catch (Exception error){
+                    callbackContext.error(error.toString());
+                }
+            }
+        });
+    }
+    public void paymentStatus(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
+        activity = this.cordova.getActivity();
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+
+                    String transactionRef = args.getString(0);
+                    String amount = args.getString(1);
+                    /*new WalletSDK(context, options).getPaymentStatus(transactionRef, amount, new IswCallback<PaymentStatusResponse>() {
+                        @Override
+                        public void onError(Exception error) {
+                            callbackContext.error(error.getMessage());// Handle and notify user of error
+                        }
+
+                        @Override
+                        public void onSuccess(PaymentStatusResponse response) {
+                            callbackContext.success(response.getMessage()+" "+getTransactionDate()+" "+getPanLast4Digits());// Update Payment Status
+                        }
+                    });*/
+                    callbackContext.success(transactionRef+"<>"+amount);// Update Payment Status
                 }
                 catch (Exception error){
                     callbackContext.error(error.toString());
