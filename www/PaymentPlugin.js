@@ -21,6 +21,7 @@ PaymentPlugin.prototype.loadWallet  = function(action, args){
             paymentMethods[i]=successMessage[i]+"\n";
           }
           //return paymentMethods;
+          var sel = document.getElementById('walletList');
           for(var i = 0; i < paymentMethods.length; i++) {
               var opt = document.createElement('option');
               opt.innerHTML = paymentMethods[i];
