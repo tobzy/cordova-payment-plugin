@@ -1,126 +1,58 @@
 var exec = require('cordova/exec');
 function PaymentPlugin() {
- console.log("PaymentPlugin.js: is created");
+ console.log('Payment plugin working');
 }
 PaymentPlugin.prototype.makePayment = function(action,args){
- exec(function success(successMessage){
-          alert(successMessage);
+   return execPromise(action,args);
+}
+
+function execPromise(action, args){
+    if (!Array.isArray(args)) {
+		args = [args];
+	}
+    var defer = new $.Deferred();
+     exec(function success(successMessage){
+              defer.resolve(successMessage);
       },
-  function error(errorMessage){
-      alert(errorMessage);
-  },
-  "PaymentPlugin",
-  action,
-  args);
+      function error(errorMessage){
+          defer.reject(errorMessage);
+      },
+      "PaymentPlugin",
+      action,
+      args);
+      return defer.promise();
 }
 
 PaymentPlugin.prototype.loadWallet  = function(action, args){
- exec(function success(successMessage){
-          var paymentMethods = new Array(successMessage.length);
-          for(var i=0; i<successMessage.length; i++){
-            paymentMethods[i]=successMessage[i]+"\n";
-          }
-          //return paymentMethods;
-          var sel = document.getElementById('walletList');
-          for(var i = 0; i < paymentMethods.length; i++) {
-              var opt = document.createElement('option');
-              opt.innerHTML = paymentMethods[i];
-              opt.value = paymentMethods[i];
-              sel.appendChild(opt);
-          }
-          //alert(paymentMethods);
-      },
-  function error(errorMessage){
-      alert(errorMessage);
-  },
-  "PaymentPlugin",
-  action,
-  [args]);
+    return execPromise(action,args);
 }
 
 PaymentPlugin.prototype.payWithWallet  = function(action, args){
- exec(function success(successMessage){
-           alert(successMessage);
-       },
-   function error(errorMessage){
-       alert(errorMessage);
-   },
-   "PaymentPlugin",
-   action,
-   [args]);
+    return execPromise(action,args);
 }
 
 PaymentPlugin.prototype.paymentStatus  = function(action, args){
- exec(function success(successMessage){
-           alert(successMessage);
-       },
-   function error(errorMessage){
-       alert(errorMessage);
-   },
-   "PaymentPlugin",
-   action,
-   args);
+    return execPromise(action,args);
 }
 
 PaymentPlugin.prototype.payWithToken  = function(action, args){
- exec(function success(successMessage){
-           alert(successMessage);
-       },
-   function error(errorMessage){
-       alert(errorMessage);
-   },
-   "PaymentPlugin",
-   action,
-   args);
+    return execPromise(action,args);
 }
 
 PaymentPlugin.prototype.validatePaymentCard  = function(action, args){
- exec(function success(successMessage){
-          alert(successMessage);
-      },
-  function error(errorMessage){
-      alert(errorMessage);
-  },
-  "PaymentPlugin",
-  action,
-  args);
+    return execPromise(action,args);
 }
 
 PaymentPlugin.prototype.validateCard  = function(action, args){
- exec(function success(successMessage){
-          alert(successMessage);
-      },
-  function error(errorMessage){
-      alert(errorMessage);
-  },
-  "PaymentPlugin",
-  action,
-  args);
+    return execPromise(action,args);
 }
 
 PaymentPlugin.prototype.pay = function(action, args){
- exec(function success(successMessage){
-          alert(successMessage);
-      },
-  function error(errorMessage){
-      alert(errorMessage);
-  },
-  "PaymentPlugin",
-  action,
-  args);
+    return execPromise(action,args);
 }
 
 PaymentPlugin.prototype.payWithCard = function(action, args){
- exec(function success(successMessage){
-          alert(successMessage);
-      },
-  function error(errorMessage){
-      alert(errorMessage);
-  },
-  "PaymentPlugin",
-  action,
-  args);
+     return execPromise(action,args);
 }
-
 var paymentPlugin = new PaymentPlugin();
 module.exports = paymentPlugin;
