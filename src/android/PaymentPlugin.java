@@ -41,11 +41,17 @@ import android.view.View;
 import android.widget.Button;
 import android.util.Log;
 
+import java.lang.Double;
 import java.lang.Exception;
 import java.lang.Override;
 import java.lang.Runnable;
 import java.lang.String;
 import java.util.Arrays;
+
+/**
+ * @author Babajide.Apata
+ * @description Expose the Payment to Cordova JavaScript Applications
+ */
 
 public class PaymentPlugin extends CordovaPlugin  {
 	public PaymentPlugin() {
@@ -63,6 +69,7 @@ public class PaymentPlugin extends CordovaPlugin  {
 		super.initialize(cordova, webView);
 	}
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+
         if(action.equals("MakePayment")){
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -332,7 +339,11 @@ public class PaymentPlugin extends CordovaPlugin  {
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 try {
-                    PayWithCard pay = new PayWithCard(activity, "1234567890", "Pay for gown", args.getString(0), "NGN", options, new IswCallback<PurchaseResponse>() {
+                    String customerId = args.getString(0);
+                    String paymentDescription = args.getString(1);
+                    String Amount = args.getString(2);
+
+                    PayWithCard pay = new PayWithCard(activity, customerId, paymentDescription, Amount, "NGN", options, new IswCallback<PurchaseResponse>() {
                         @Override
                         public void onError(Exception error) {
                             callbackContext.error(error.getMessage());
