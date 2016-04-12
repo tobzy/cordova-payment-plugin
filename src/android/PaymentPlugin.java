@@ -13,6 +13,7 @@ import com.interswitchng.sdk.auth.Passport;
 import com.interswitchng.sdk.model.RequestOptions;
 import com.interswitchng.sdk.payment.IswCallback;
 import com.interswitchng.sdk.payment.Payment;
+import com.interswitchng.sdk.payment.PurchaseClient;
 import com.interswitchng.sdk.payment.android.PaymentSDK;
 import com.interswitchng.sdk.payment.android.PassportSDK;
 import com.interswitchng.sdk.payment.android.WalletSDK;
@@ -21,6 +22,7 @@ import com.interswitchng.sdk.payment.android.inapp.PayWithCard;
 import com.interswitchng.sdk.payment.android.inapp.ValidateCard;
 import com.interswitchng.sdk.payment.android.inapp.PayWithWallet;
 import com.interswitchng.sdk.payment.android.inapp.PayWithToken;
+import com.interswitchng.sdk.payment.android.inapp.LoginCredentials;
 import com.interswitchng.sdk.payment.android.util.Util;
 import com.interswitchng.sdk.util.StringUtils;
 import com.interswitchng.sdk.util.RandomString;
@@ -32,6 +34,8 @@ import com.interswitchng.sdk.payment.model.WalletRequest;
 import com.interswitchng.sdk.payment.model.PaymentMethod;
 import com.interswitchng.sdk.payment.model.ValidateCardRequest;
 import com.interswitchng.sdk.payment.model.ValidateCardResponse;
+import com.interswitchng.sdk.payment.model.AuthorizeOtpRequest;
+import com.interswitchng.sdk.payment.model.AuthorizeOtpResponse;
 import com.interswitchng.sdk.model.User;
 import com.interswitchng.sdk.model.UserInfoRequest;
 
@@ -76,14 +80,22 @@ public class PaymentPlugin extends CordovaPlugin  {
 	}
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
 
+        /*if(!action.equals("init")){
+            init(args, callbackContext);
+            Payment.overrideApiBase(Payment.QA_API_BASE); // used to override the payment api base url.
+            Passport.overrideApiBase(Passport.QA_API_BASE);
+            options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
+            //Log.e("Error", this.clientId + this.clientSecret);
+            //callbackContext.success(options.toString());
+            //return true;
+        }*/
         if(action.equals("MakePayment")){
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         makePayment(action, args, callbackContext); //asyncronous call
-                    }
-                    catch (JSONException jsonException){
+                    } catch (JSONException jsonException) {
                         callbackContext.error(jsonException.toString());
                     }
                     // Call the success function of the .js file
@@ -211,6 +223,21 @@ public class PaymentPlugin extends CordovaPlugin  {
             });
             return true;
         }
+        else if(action.equals("UserInformation")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        userInformation(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (JSONException jsonException){
+                        callbackContext.error(jsonException.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
         return false;
     }
     public void makePayment(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
@@ -224,7 +251,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                     request.setCvv2(args.getString(2));
                     request.setPinData(args.getString(3)); // Optional Card PIN for card payment
                     request.setTransactionRef(RandomString.numeric(12));
-                    request.setExpiryDate(args.getString(5));
+                    request.setExpiryDate(args.getString(4));
                     request.setCustomerId("1234567890");
                     request.setCurrency("NGN");
                     new PaymentSDK(context,options).purchase(request, new IswCallback<PurchaseResponse>() {
@@ -240,7 +267,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                             PluginResult result = new PluginResult(PluginResult.Status.OK, gson.toJson(response));
                             result.setKeepCallback(true);
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
-                                callbackContext.sendPluginResult(result);
+                                callbackContext.success(response.getOtpTransactionIdentifier()+" "+response.getMessage());
                             } else {
                                 callbackContext.sendPluginResult(result);
                             }
@@ -275,12 +302,19 @@ public class PaymentPlugin extends CordovaPlugin  {
                         public void onSuccess(ValidateCardResponse response) {
                             // Check if OTP is required.
                             Gson gson = new Gson();
-                            PluginResult result = new PluginResult(PluginResult.Status.OK, gson.toJson(response));
-                            result.setKeepCallback(true);
-                            if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
-                                callbackContext.sendPluginResult(result);
-                            } else {
-                                callbackContext.sendPluginResult(result);
+                            PluginResult result = null;
+                            try {
+                                if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
+                                    result = new PluginResult(PluginResult.Status.OK, gson.toJson(response));
+                                    result.setKeepCallback(true);
+                                    callbackContext.sendPluginResult(result);
+                                } else {
+                                    result = new PluginResult(PluginResult.Status.OK, gson.toJson(response));
+                                    result.setKeepCallback(true);
+                                    callbackContext.sendPluginResult(result);
+                                }
+                            } catch (Exception ex) {
+                                callbackContext.error(ex.getMessage());
                             }
                             // callbackContext.success(response.getTransactionRef());
                         }
@@ -292,7 +326,8 @@ public class PaymentPlugin extends CordovaPlugin  {
             }
         });
     }
-    public void loadWallet(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
+
+    public void loadWallet(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
         context = cordova.getActivity().getApplicationContext();
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
@@ -482,9 +517,12 @@ public class PaymentPlugin extends CordovaPlugin  {
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 try {
-                    final UserInfoRequest userInfoRequest = new UserInfoRequest();
-                    userInfoRequest.setUsername(args.getString(0));
-                    //userInfoRequest.setPassword(args.getString(1));
+                    final LoginCredentials loginCredentials = new LoginCredentials();
+                    loginCredentials.setUsername(args.getString(0));
+                    loginCredentials.setPassword(args.getString(1));
+                    UserInfoRequest userInfoRequest = new UserInfoRequest();
+                    userInfoRequest.setUsername(loginCredentials.getUsername());
+                    userInfoRequest.setUsername(loginCredentials.getPassword());
                     new PassportSDK(activity, options).getUserInfo(userInfoRequest, new IswCallback<User>() {
 
                         @Override
@@ -512,7 +550,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                                 });
                             } else {
                                 Gson gson = new Gson();
-                                PluginResult result = new PluginResult(PluginResult.Status.OK, gson.toJson(userInfoRequest));
+                                PluginResult result = new PluginResult(PluginResult.Status.OK, gson.toJson(response));
                                 result.setKeepCallback(true);
                                 callbackContext.sendPluginResult(result);
                             }
@@ -528,5 +566,19 @@ public class PaymentPlugin extends CordovaPlugin  {
     public JSONArray convertToJSONArray(String[] paymentMethods){
         JSONArray jsonArray = new JSONArray(Arrays.asList(paymentMethods));
         return jsonArray;
+    }
+    private void init(JSONArray args, CallbackContext callbackContext) {
+        try{
+            if (args != null && args.length() > 0) {
+                JSONObject params = args.getJSONObject(0);
+                this.clientId=params.getString("clientId");
+                this.clientSecret=params.getString("clientSecret");
+            } else {
+                callbackContext.error("Invalid ClientId or Client Secret");
+            }
+        }
+        catch (JSONException jsonException){
+            callbackContext.error(jsonException.toString());
+        }
     }
 }
