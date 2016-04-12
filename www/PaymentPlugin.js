@@ -22,7 +22,9 @@ function execPromise(action, args){
       args);
       return defer.promise();
 }
-
+PaymentPlugin.prototype.init = function(action, args){
+      return execPromise(action,args);
+ }
 PaymentPlugin.prototype.loadWallet  = function(action, args){
     return execPromise(action,args);
 }
@@ -42,6 +44,9 @@ PaymentPlugin.prototype.payWithToken  = function(action, args){
 PaymentPlugin.prototype.validatePaymentCard  = function(action, args){
     return execPromise(action,args);
 }
+PaymentPlugin.prototype.userInformation = function(action, args){
+    return execPromise(action,args);
+}
 
 PaymentPlugin.prototype.validateCard  = function(action, args){
     return execPromise(action,args);
@@ -52,7 +57,7 @@ PaymentPlugin.prototype.pay = function(action, args){
 }
 
 PaymentPlugin.prototype.payWithCard = function(action, args){
-     return execPromise(action,args);
-}
+      return execPromise(action,args);
+ }
 var paymentPlugin = new PaymentPlugin();
 module.exports = paymentPlugin;
