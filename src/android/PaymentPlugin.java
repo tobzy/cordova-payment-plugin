@@ -67,29 +67,34 @@ public class PaymentPlugin extends CordovaPlugin  {
         Payment.overrideApiBase(Payment.QA_API_BASE); // used to override the payment api base url.
         Passport.overrideApiBase(Passport.QA_API_BASE); //used to override the payment api base url.
     }
-    private String clientId ="IKIA14BAEA0842CE16CA7F9FED619D3ED62A54239276";
-    private String clientSecret="Z3HnVfCEadBLZ8SYuFvIQG52E472V3BQLh4XDKmgM2A=";
+    private String clientId;
+    private String clientSecret;
+
     private Activity activity;
     private Context context;
     private Button payWithCard;
-
-    final RequestOptions options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
+    private static RequestOptions options;
+    //final RequestOptions options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
 		super.initialize(cordova, webView);
 	}
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
 
-        /*if(!action.equals("init")){
-            init(args, callbackContext);
-            Payment.overrideApiBase(Payment.QA_API_BASE); // used to override the payment api base url.
-            Passport.overrideApiBase(Passport.QA_API_BASE);
-            options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
-            //Log.e("Error", this.clientId + this.clientSecret);
-            //callbackContext.success(options.toString());
-            //return true;
-        }*/
-        if(action.equals("MakePayment")){
+        if(action.equals("Init")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        init(args, callbackContext);
+                    } catch (Exception ex) {
+                        callbackContext.error(ex.toString());
+                    }
+                }
+            });
+            return true;
+        }
+        else if(action.equals("MakePayment")){
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -275,7 +280,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                     });
                 }
                 catch (JSONException jsonException){
-                    callbackContext.error(jsonException.toString());
+                    callbackContext.error(jsonException.toString()+args);
                 }
             }
         });
@@ -570,9 +575,13 @@ public class PaymentPlugin extends CordovaPlugin  {
     private void init(JSONArray args, CallbackContext callbackContext) {
         try{
             if (args != null && args.length() > 0) {
-                JSONObject params = args.getJSONObject(0);
-                this.clientId=params.getString("clientId");
-                this.clientSecret=params.getString("clientSecret");
+                //JSONObject params = args.getJSONObject(0);
+                this.clientId=args.getString(0);
+                this.clientSecret=args.getString(1);
+                Payment.overrideApiBase(Payment.QA_API_BASE); // used to override the payment api base url.
+                Passport.overrideApiBase(Passport.QA_API_BASE);
+                options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
+                callbackContext.success("Initialization was successfull ClientId:"+this.clientId+" ClientSecret : "+this.clientSecret);
             } else {
                 callbackContext.error("Invalid ClientId or Client Secret");
             }
