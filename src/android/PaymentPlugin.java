@@ -74,6 +74,7 @@ public class PaymentPlugin extends CordovaPlugin  {
     private Context context;
     private Button payWithCard;
     private static RequestOptions options;
+    private IswCallback<LoginCredentials> callback;
     //final RequestOptions options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -203,7 +204,22 @@ public class PaymentPlugin extends CordovaPlugin  {
                 @Override
                 public void run() {
                     try {
-                        payWithCard(action, args, callbackContext); //asyncronous call
+                        payWithWallet(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (JSONException jsonException){
+                        callbackContext.error(jsonException.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("PayWithWalletSDK")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithWalletSDK(action, args, callbackContext); //asyncronous call
                     }
                     catch (JSONException jsonException){
                         callbackContext.error(jsonException.toString());
@@ -439,6 +455,58 @@ public class PaymentPlugin extends CordovaPlugin  {
             }
         });
     }
+    public void payWithWalletSDK(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
+        context = cordova.getActivity().getApplicationContext();
+        activity = this.cordova.getActivity();
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+
+                    final PurchaseRequest request = new PurchaseRequest();
+                    request.setCustomerId("1234567890");
+                    request.setAmount(args.getString(1));
+
+                    if (args.getString(0) == null) {
+                        callbackContext.error("Error : No wallet item selected");
+                        return;
+                    }
+                    request.setPan((args.getString(0)));
+                    request.setPinData(args.getString(2));
+                    request.setRequestorId("11179920172");
+                    request.setCurrency("NGN");
+                    request.setTransactionRef(RandomString.numeric(12));
+
+                    new WalletSDK(context, options).purchase(request, new IswCallback<PurchaseResponse>() {
+
+                        @Override
+                        public void onError(Exception error) {
+                            callbackContext.error(error.getMessage());
+                        }
+
+                        @Override
+                        public void onSuccess(PurchaseResponse response) {
+                           String transactionIdentifier = response.getTransactionIdentifier();
+                            if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
+                             String otpTransactionIdentifier = response.getOtpTransactionIdentifier();
+                                Gson gson = new Gson();
+                                PluginResult result = new PluginResult(PluginResult.Status.OK, gson.toJson(otpTransactionIdentifier));
+                                result.setKeepCallback(true);
+                                callbackContext.sendPluginResult(result);
+                            } else {
+                                Gson gson = new Gson();
+                                PluginResult result = new PluginResult(PluginResult.Status.OK, gson.toJson(response));
+                                result.setKeepCallback(true);
+                                callbackContext.sendPluginResult(result);
+                            }
+                        }
+                    });
+                }
+                catch (JSONException jsonException){
+                    callbackContext.error(jsonException.toString());
+                }
+            }
+        });
+    }
     public void payWithToken(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
         activity = this.cordova.getActivity();
         cordova.getActivity().runOnUiThread(new Runnable() {
@@ -560,6 +628,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                                 Gson gson = new Gson();
                                 PluginResult result = new PluginResult(PluginResult.Status.OK, gson.toJson(response));
                                 result.setKeepCallback(true);
+
                                 callbackContext.sendPluginResult(result);
                             }
                         }

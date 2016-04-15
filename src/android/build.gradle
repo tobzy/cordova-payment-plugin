@@ -27,7 +27,7 @@ android {
 repositories {
     jcenter()
     flatDir {
-        dirs 'aarfile'
+        dirs 'libs'
     }
 }
 
