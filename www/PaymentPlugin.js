@@ -25,11 +25,17 @@ function execPromise(action, args){
 PaymentPlugin.prototype.init = function(action, args){
       return execPromise(action,args);
  }
+ PaymentPlugin.prototype.authorizeOtp = function(action, args){
+       return execPromise(action,args);
+  }
 PaymentPlugin.prototype.loadWallet  = function(action, args){
     return execPromise(action,args);
 }
 
 PaymentPlugin.prototype.payWithWallet  = function(action, args){
+    return execPromise(action,args);
+}
+PaymentPlugin.prototype.payWithWalletSDK  = function(action, args){
     return execPromise(action,args);
 }
 
