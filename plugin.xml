@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns:android="http://schemas.android.com/apk/res/android"
-    id="com.interswitchng.sdk.payment" version="0.0.1"
+<plugin id="com.interswitchng.sdk.payment" version="0.0.1"
     xmlns="http://apache.org/cordova/ns/plugins/1.0">
     <name>CoolPlugin</name>
     <description>Cordova Payment Plugin on Interswitch Platform</description>
@@ -24,13 +23,13 @@
         <framework src="com.android.support:appcompat-v7:23.1.1" />
         <framework src="com.android.support:design:23.1.1" />
         <framework custom="true" src="src/android/build.gradle" type="gradleReference" />
-        <resource-file src="aarfile/payment-android-release.aar"
-            target="aarfile/payment-android-release.aar" />
-        <resource-file src="aarfile/deviceprint-release-2.2.0.aar"
-            target="aarfile/deviceprint-release-2.2.0.aar" />
-        <resource-file src="aarfile/core.jar" target="aarfile/core.jar" />
-        <resource-file src="aarfile/gson-2.3.1.jar" target="aarfile/gson-2.3.1.jar" />
-        <resource-file src="aarfile/payment.jar" target="aarfile/payment.jar" />
+        <resource-file src="libs/payment-android-release.aar"
+            target="libs/payment-android-release.aar" />
+        <resource-file src="libs/deviceprint-release-2.2.0.aar"
+            target="libs/deviceprint-release-2.2.0.aar" />
+        <resource-file src="libs/core.jar" target="libs/core.jar" />
+        <resource-file src="libs/gson-2.3.1.jar" target="libs/gson-2.3.1.jar" />
+        <resource-file src="libs/payment.jar" target="libs/payment.jar" />
     </platform>
 
 </plugin>
