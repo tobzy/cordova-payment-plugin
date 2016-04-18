@@ -520,12 +520,18 @@ public class PaymentPlugin extends CordovaPlugin  {
             public void run() {
                 try {
                     options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
-                    String token = args.getString(0);
-                    String cardType = "Verve";
-                    String panLast4Digits = args.getString(2);
-                    String expiryDate = args.getString(3);
 
-                    PayWithToken payWithToken = new PayWithToken(activity, "1234567890", "20", token, expiryDate, "NGN", cardType, panLast4Digits, "Pay for consultancy", options, new IswCallback<PurchaseResponse>() {
+                    JSONObject params = args.getJSONObject(0);
+                    String currency  ="NGN";
+                    String token = params.getString("pan");
+                    String amount = params.getString("amount");
+                    String cardType = params.getString("cardtype");
+                    String panLast4Digits = params.getString("panLast4Digits");
+                    String expiryDate = params.getString("expiryDate");
+                    String customerId = params.getString("customerId");
+                    String description = params.getString("description");
+
+                    PayWithToken payWithToken = new PayWithToken(activity, customerId, amount, token, expiryDate, currency, cardType, panLast4Digits, description, options, new IswCallback<PurchaseResponse>() {
                         @Override
                         public void onError(Exception error) {
                             callbackContext.error(error.getMessage());
