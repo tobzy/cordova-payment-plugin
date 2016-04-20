@@ -96,6 +96,20 @@ public class PaymentPlugin extends CordovaPlugin  {
             });
             return true;
         }
+        else if(action.equals("AuthorizeOTP")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        authorizeOtp(action, args, callbackContext); //asyncronous call
+                    } catch (Exception exception) {
+                        callbackContext.error(exception.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
         else if(action.equals("MakePayment")){
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -297,7 +311,9 @@ public class PaymentPlugin extends CordovaPlugin  {
                         @Override
                         public void onSuccess(PurchaseResponse response) {
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
+
                                 callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+
                             } else {
                                 callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
                             }
@@ -358,9 +374,9 @@ public class PaymentPlugin extends CordovaPlugin  {
         context = cordova.getActivity().getApplicationContext();
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
                 final WalletRequest request = new WalletRequest();
                 try {
+                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
                     request.setTransactionRef(RandomString.numeric(12));
                     new WalletSDK(context, options).getPaymentMethods(request, new IswCallback<WalletResponse>() {
                         @Override
@@ -477,16 +493,16 @@ public class PaymentPlugin extends CordovaPlugin  {
                 try {
                     options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
                     final PurchaseRequest request = new PurchaseRequest();
-                    request.setCustomerId("1234567890");
-                    request.setAmount(args.getString(1));
-
-                    if (args.getString(0) == null) {
+                    JSONObject params = args.getJSONObject(0);
+                    request.setCustomerId(params.getString("customerId"));
+                    request.setAmount(params.getString("amount"));
+                    if (params.getString("pan") == null) {
                         callbackContext.error("Error : No wallet item selected");
                         return;
                     }
-                    request.setPan((args.getString(0)));
-                    request.setPinData(args.getString(2));
-                    request.setRequestorId("11179920172");
+                    request.setPan(params.getString("pan"));
+                    request.setPinData(params.getString("pin"));
+                    request.setRequestorId(params.getString("requestorId"));
                     request.setCurrency("NGN");
                     request.setTransactionRef(RandomString.numeric(12));
 
@@ -500,8 +516,9 @@ public class PaymentPlugin extends CordovaPlugin  {
                         public void onSuccess(PurchaseResponse response) {
                            String transactionIdentifier = response.getTransactionIdentifier();
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
-                             String otpTransactionIdentifier = response.getOtpTransactionIdentifier();
-                                callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                             //String otpTransactionIdentifier = response.getOtpTransactionIdentifier();
+                             callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+
                             } else {
                                 callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
                             }
@@ -520,7 +537,6 @@ public class PaymentPlugin extends CordovaPlugin  {
             public void run() {
                 try {
                     options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
-
                     JSONObject params = args.getJSONObject(0);
                     String currency  ="NGN";
                     String token = params.getString("pan");
@@ -530,7 +546,6 @@ public class PaymentPlugin extends CordovaPlugin  {
                     String expiryDate = params.getString("expiryDate");
                     String customerId = params.getString("customerId");
                     String description = params.getString("description");
-
                     PayWithToken payWithToken = new PayWithToken(activity, customerId, amount, token, expiryDate, currency, cardType, panLast4Digits, description, options, new IswCallback<PurchaseResponse>() {
                         @Override
                         public void onError(Exception error) {
@@ -660,20 +675,31 @@ public class PaymentPlugin extends CordovaPlugin  {
             callbackContext.error(jsonException.toString());
         }
     }
-    public void authorizeOtp(final ValidateCardResponse response, final String otp, final CallbackContext callbackContext){
+    public void authorizeOtp(final String action, final JSONArray args, final CallbackContext callbackContext){
         activity = this.cordova.getActivity();
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 try {
+                    context = cordova.getActivity().getApplicationContext();
+                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
+                    JSONObject params = args.getJSONObject(0);
                     AuthorizeOtpRequest otpRequest = new AuthorizeOtpRequest();
-                    otpRequest.setOtp(otp); // Accept OTP from user
-                    otpRequest.setOtpTransactionIdentifier(response.getOtpTransactionIdentifier()); // Set the OTP identifier for the request
-                    otpRequest.setTransactionRef(response.getTransactionRef()); // Set the unique transaction reference.
-                    AuthorizeOtpResponse otpResponse = new PurchaseClient(options).authorizeOtp(otpRequest); //Authorize OTP Request
-                    callbackContext.sendPluginResult(getPluginResult(callbackContext,otpResponse));
+                    otpRequest.setOtp(params.getString("otp")); // Accept OTP from user
+                    otpRequest.setOtpTransactionIdentifier(params.getString("otpTransactionIdentifier")); // Set the OTP identifier for the request
+                    otpRequest.setTransactionRef(params.getString("transactionRef")); // Set the unique transaction reference.
+                    new PaymentSDK(context,options).authorizeOtp(otpRequest, new IswCallback<AuthorizeOtpResponse>() {
+                        @Override
+                        public void onError(Exception error) {
+                            callbackContext.error(error.getMessage());
+                        }
+                        @Override
+                        public void onSuccess(AuthorizeOtpResponse otpResponse) {
+                            callbackContext.sendPluginResult(getPluginResult(callbackContext,otpResponse));
+                        }
+                    });
                 }
                 catch (Exception error){
-                    callbackContext.error(error.toString());
+                    callbackContext.sendPluginResult(getPluginResult(callbackContext, error.toString()));
                 }
             }
         });
