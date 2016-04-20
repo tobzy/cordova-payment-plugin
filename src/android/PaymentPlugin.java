@@ -277,20 +277,13 @@ public class PaymentPlugin extends CordovaPlugin  {
         return false;
     }
 
-    public <T> PluginResult getPluginResult(CallbackContext callbackContext, T response){
-        Gson gson = new Gson();
-        PluginResult result = null;
-        result = new PluginResult(PluginResult.Status.OK, gson.toJson(response));
-        result.setKeepCallback(true);
-        callbackContext.sendPluginResult(result);
-        return result;
-    }
+
 
     public void makePayment(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
         context = cordova.getActivity().getApplicationContext();
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                try{
+                try {
                     options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
                     JSONObject params = args.getJSONObject(0);
                     PurchaseRequest request = new PurchaseRequest(); // Setup request parameters
@@ -302,7 +295,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                     request.setExpiryDate(params.getString("expiryDate"));
                     request.setCustomerId(params.getString("customerId"));
                     request.setCurrency("NGN");
-                    new PaymentSDK(context,options).purchase(request, new IswCallback<PurchaseResponse>() {
+                    new PaymentSDK(context, options).purchase(request, new IswCallback<PurchaseResponse>() {
                         @Override
                         public void onError(Exception error) {
                             callbackContext.error(error.getMessage());
@@ -312,15 +305,14 @@ public class PaymentPlugin extends CordovaPlugin  {
                         public void onSuccess(PurchaseResponse response) {
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
 
-                                callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
 
                             } else {
-                                callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
                             }
                         }
                     });
-                }
-                catch (JSONException jsonException){
+                } catch (JSONException jsonException) {
                     callbackContext.error(jsonException.toString());
                 }
             }
@@ -349,13 +341,11 @@ public class PaymentPlugin extends CordovaPlugin  {
                         @Override
                         public void onSuccess(ValidateCardResponse response) {
                             // Check if OTP is required.
-                            Gson gson = new Gson();
-                            PluginResult result = null;
                             try {
                                 if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
-                                    callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                                    callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
                                 } else {
-                                    callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                                    callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
                                 }
                             } catch (Exception ex) {
                                 callbackContext.error(ex.getMessage());
@@ -386,7 +376,7 @@ public class PaymentPlugin extends CordovaPlugin  {
 
                         @Override
                         public void onSuccess(WalletResponse response) {
-                            callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                            callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
                         }
                     });
                 }
@@ -512,15 +502,16 @@ public class PaymentPlugin extends CordovaPlugin  {
                         public void onError(Exception error) {
                             callbackContext.error(error.getMessage());
                         }
+
                         @Override
                         public void onSuccess(PurchaseResponse response) {
-                           String transactionIdentifier = response.getTransactionIdentifier();
+                            String transactionIdentifier = response.getTransactionIdentifier();
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
-                             //String otpTransactionIdentifier = response.getOtpTransactionIdentifier();
-                             callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                                //String otpTransactionIdentifier = response.getOtpTransactionIdentifier();
+                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
 
                             } else {
-                                callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
                             }
                         }
                     });
@@ -581,7 +572,7 @@ public class PaymentPlugin extends CordovaPlugin  {
 
                         @Override
                         public void onSuccess(ValidateCardResponse response) {
-                            callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                            callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext,response));
                         }
                     });
                     validateCard.start();
@@ -638,11 +629,11 @@ public class PaymentPlugin extends CordovaPlugin  {
 
                                     @Override
                                     public void onSuccess(Object otpResponse) {
-                                        callbackContext.sendPluginResult(getPluginResult(callbackContext,otpResponse));
+                                        callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, otpResponse));
                                     }
                                 });
                             } else {
-                                callbackContext.sendPluginResult(getPluginResult(callbackContext,response));
+                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
                             }
                         }
                     });
@@ -668,7 +659,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                 options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
                 callbackContext.success("Initialization was successfull");
             } else {
-                callbackContext.error("Invalid ClientId or Client Secret : "+args);
+                callbackContext.error("Invalid ClientId or Client Secret : ");
             }
         }
         catch (JSONException jsonException){
@@ -694,12 +685,12 @@ public class PaymentPlugin extends CordovaPlugin  {
                         }
                         @Override
                         public void onSuccess(AuthorizeOtpResponse otpResponse) {
-                            callbackContext.sendPluginResult(getPluginResult(callbackContext,otpResponse));
+                            callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, otpResponse));
                         }
                     });
                 }
                 catch (Exception error){
-                    callbackContext.sendPluginResult(getPluginResult(callbackContext, error.toString()));
+                    callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, error.toString()));
                 }
             }
         });
