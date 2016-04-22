@@ -15,17 +15,12 @@ import com.interswitchng.sdk.payment.IswCallback;
 import com.interswitchng.sdk.payment.Payment;
 import com.interswitchng.sdk.payment.PurchaseClient;
 import com.interswitchng.sdk.payment.android.PassportSDK;
-import com.interswitchng.sdk.payment.model.ValidateCardResponse;
-import com.interswitchng.sdk.payment.android.inapp.Pay;
-import com.interswitchng.sdk.payment.android.inapp.PayWithCard;
-import com.interswitchng.sdk.payment.android.inapp.ValidateCard;
-import com.interswitchng.sdk.payment.android.inapp.PayWithWallet;
+
+
 import com.interswitchng.sdk.payment.android.inapp.LoginCredentials;
 import com.interswitchng.sdk.payment.android.util.Util;
 import com.interswitchng.sdk.util.StringUtils;
-import com.interswitchng.sdk.util.RandomString;
-import com.interswitchng.sdk.payment.model.PurchaseResponse;
-import com.interswitchng.sdk.payment.model.PurchaseRequest;
+
 import com.interswitchng.sdk.payment.model.PaymentMethod;
 import com.interswitchng.sdk.model.User;
 import com.interswitchng.sdk.model.UserInfoRequest;
@@ -74,6 +69,7 @@ public class PaymentPlugin extends CordovaPlugin  {
 	}
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
         final PayWithOutUI payWithOutUI = new PayWithOutUI(activity,clientId,clientSecret);
+        final PayWithUI payWithUI = new PayWithUI(activity,clientId,clientSecret);
         if (action.equals("Init")) {
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -135,7 +131,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                 @Override
                 public void run() {
                     try {
-                        validatePaymentCard(action, args, callbackContext); //asyncronous call
+                        payWithUI.validatePaymentCard(action, args, callbackContext); //asyncronous call
                     }
                     catch (Exception error){
                         callbackContext.error(error.toString());
@@ -165,7 +161,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                 @Override
                 public void run() {
                     try {
-                        pay(action, args, callbackContext); //asyncronous call
+                        payWithUI.pay(action, args, callbackContext); //asyncronous call
                     }
                     catch (Exception error){
                         callbackContext.error(error.toString());
@@ -195,7 +191,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                 @Override
                 public void run() {
                     try {
-                        payWithCard(action, args, callbackContext); //asyncronous call
+                        payWithUI.payWithCard(action, args, callbackContext); //asyncronous call
                     }
                     catch (Exception error){
                         callbackContext.error(error.toString());
@@ -210,7 +206,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                 @Override
                 public void run() {
                     try {
-                        payWithWallet(action, args, callbackContext); //asyncronous call
+                        payWithUI.payWithWallet(action, args, callbackContext); //asyncronous call
                     }
                     catch (Exception error){
                         callbackContext.error(error.toString());
@@ -267,124 +263,6 @@ public class PaymentPlugin extends CordovaPlugin  {
         }
         return false;
     }
-
-
-
-
-    public void pay(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
-        activity = this.cordova.getActivity();
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                try {
-                    JSONObject params = args.getJSONObject(0);
-                    String customerId = params.getString("customerId");
-                    String currency = params.getString("currency");
-                    String description = params.getString("description");
-                    String amount = params.getString("amount");
-                    Pay pay = new Pay(activity, customerId, description, amount, currency, options, new IswCallback<PurchaseResponse>() {
-                        @Override
-                        public void onError(Exception error) {
-                            callbackContext.error(error.getMessage());
-                        }
-
-                        @Override
-                        public void onSuccess(PurchaseResponse response) {
-                            callbackContext.success(response.getTransactionIdentifier());
-                        }
-                    });
-                    pay.start();
-                } catch (Exception ex) {
-                    callbackContext.error(ex.toString());
-                }
-            }
-        });
-    }
-    public void payWithCard(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
-        activity = this.cordova.getActivity();
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                try {
-                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
-                    JSONObject params = args.getJSONObject(0);
-                    String customerId = params.getString("customerId");
-                    String currency = params.getString("currency");
-                    String description = params.getString("description");
-                    String amount = params.getString("amount");
-                    PayWithCard pay = new PayWithCard(activity, customerId, description, amount, currency, options, new IswCallback<PurchaseResponse>() {
-                        @Override
-                        public void onError(Exception error) {
-                            callbackContext.error(error.getMessage());
-                        }
-
-                        @Override
-                        public void onSuccess(PurchaseResponse response) {
-                            callbackContext.success(response.getTransactionIdentifier());
-                        }
-                    });
-                    pay.start();
-                } catch (Exception ex) {
-                    callbackContext.error(ex.toString());
-                }
-            }
-        });
-    }
-    public void payWithWallet(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
-        activity = this.cordova.getActivity();
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                try {
-                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
-                    JSONObject params = args.getJSONObject(0);
-                    String customerId = params.getString("customerId");
-                    String currency = params.getString("currency");
-                    String description = params.getString("description");
-                    String amount = params.getString("amount");
-                    PayWithWallet payWithWallet = new PayWithWallet(activity, customerId, description, amount, currency, options, new IswCallback<PurchaseResponse>() {
-                        @Override
-                        public void onError(Exception error) {
-                            callbackContext.error(error.getMessage());
-                        }
-
-                        @Override
-                        public void onSuccess(PurchaseResponse response) {
-                            callbackContext.success(response.getTransactionIdentifier());
-                        }
-                    });
-                    payWithWallet.start();
-                } catch (Exception ex) {
-                    callbackContext.error(ex.toString());
-                }
-            }
-        });
-    }
-
-    public void validatePaymentCard(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
-        activity = this.cordova.getActivity();
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                try {
-                    JSONObject params = args.getJSONObject(0);
-                    String customerId = params.getString("customerId");
-                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
-                    ValidateCard validateCard = new ValidateCard(activity, customerId, options, new IswCallback<ValidateCardResponse>() {
-                        @Override
-                        public void onError(Exception error) {
-                            callbackContext.error(error.getMessage());
-                        }
-
-                        @Override
-                        public void onSuccess(ValidateCardResponse response) {
-                            callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
-                        }
-                    });
-                    validateCard.start();
-                } catch (Exception error) {
-                    callbackContext.error(error.toString());
-                }
-            }
-        });
-    }
-
     public void userInformation(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
         activity = this.cordova.getActivity();
         activity.runOnUiThread(new Runnable() {

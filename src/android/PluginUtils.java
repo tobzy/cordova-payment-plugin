@@ -5,7 +5,12 @@ import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.PluginResult;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class PluginUtils extends CordovaPlugin{
+
     public PluginUtils(){
 
     }
