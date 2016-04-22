@@ -28,8 +28,8 @@ PaymentPlugin.prototype.init = function(action, args){
  PaymentPlugin.prototype.authorizeOtp = function(action, args){
        return execPromise(action,args);
   }
-PaymentPlugin.prototype.loadWallet  = function(action, args){
-    return execPromise(action,args);
+PaymentPlugin.prototype.loadWallet  = function(action){
+    return execPromise(action);
 }
 
 PaymentPlugin.prototype.payWithWallet  = function(action, args){
