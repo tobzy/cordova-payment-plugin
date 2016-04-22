@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin id="com.interswitchng.sdk.payment" version="0.0.1"
     xmlns="http://apache.org/cordova/ns/plugins/1.0">
-    <name>CoolPlugin</name>
+    <name>PaymentPlugin</name>
     <description>Cordova Payment Plugin on Interswitch Platform</description>
     <license>Apache 2.0</license>
     <keywords>cordova,payment</keywords>
@@ -19,7 +19,12 @@
                 <param name="android-package" value="PaymentPlugin"/>
             </feature>
         </config-file>
+
         <source-file src="src/android/PaymentPlugin.java" target-dir="src/" />
+        <source-file src="src/android/PluginUtils.java" target-dir="src/" />
+        <source-file src="src/android/PayWithOutUI.java" target-dir="src/" />
+        <source-file src="src/android/PayWithUI.java" target-dir="src/" />
+
         <framework src="com.android.support:appcompat-v7:23.1.1" />
         <framework src="com.android.support:design:23.1.1" />
         <framework custom="true" src="src/android/build.gradle" type="gradleReference" />
