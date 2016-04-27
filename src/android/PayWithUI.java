@@ -12,6 +12,7 @@ import com.interswitchng.sdk.payment.android.inapp.Pay;
 import com.interswitchng.sdk.payment.android.inapp.PayWithCard;
 import com.interswitchng.sdk.payment.android.inapp.ValidateCard;
 import com.interswitchng.sdk.payment.android.inapp.PayWithWallet;
+import com.interswitchng.sdk.payment.android.inapp.PayWithToken;
 import com.interswitchng.sdk.payment.model.ValidateCardResponse;
 import com.interswitchng.sdk.payment.IswCallback;
 
@@ -127,7 +128,38 @@ public class PayWithUI extends CordovaPlugin{
             }
         });
     }
+    public void payWithToken(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
+                    JSONObject params = args.getJSONObject(0);
+                    String currency = params.getString("currency");
+                    String token = params.getString("pan");
+                    String amount = params.getString("amount");
+                    String cardType = params.getString("cardtype");
+                    String panLast4Digits = params.getString("panLast4Digits");
+                    String expiryDate = params.getString("expiryDate");
+                    String customerId = params.getString("customerId");
+                    String description = params.getString("description");
+                    PayWithToken payWithToken = new PayWithToken(activity, customerId, amount, token, expiryDate, currency, cardType, panLast4Digits, description, options, new IswCallback<PurchaseResponse>() {
+                        @Override
+                        public void onError(Exception error) {
+                            callbackContext.error(error.getMessage());
+                        }
 
+                        @Override
+                        public void onSuccess(PurchaseResponse response) {
+                            callbackContext.success(response.getTransactionIdentifier());
+                        }
+                    });
+                    payWithToken.start();
+                } catch (Exception ex) {
+                    callbackContext.error(ex.toString());
+                }
+            }
+        });
+    }
     public void validatePaymentCard(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
         activity.runOnUiThread(new Runnable() {
             public void run() {

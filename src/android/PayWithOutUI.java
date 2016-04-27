@@ -15,12 +15,12 @@ import com.interswitchng.sdk.payment.android.PaymentSDK;
 import com.interswitchng.sdk.payment.android.WalletSDK;
 import com.interswitchng.sdk.payment.model.AuthorizeOtpRequest;
 import com.interswitchng.sdk.payment.model.AuthorizeOtpResponse;
-import com.interswitchng.sdk.payment.android.inapp.PayWithToken;
 
 import com.interswitchng.sdk.payment.model.ValidateCardRequest;
 import com.interswitchng.sdk.payment.model.ValidateCardResponse;
 import com.interswitchng.sdk.payment.model.PaymentStatusResponse;
 import com.interswitchng.sdk.payment.model.PaymentStatusRequest;
+import com.interswitchng.sdk.payment.android.util.Util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -104,54 +104,26 @@ public class PayWithOutUI extends CordovaPlugin{
         activity.runOnUiThread(new Runnable() {
             public void run() {
                 final WalletRequest request = new WalletRequest();
-                try {
-                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
-                    request.setTransactionRef(RandomString.numeric(12));
-                    new WalletSDK(context, options).getPaymentMethods(request, new IswCallback<WalletResponse>() {
-                        @Override
-                        public void onError(Exception error) {
-                            callbackContext.error(error.getMessage());
-                        }
+                if(Util.isNetworkAvailable(context)){
+                    try {
+                        options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
+                        request.setTransactionRef(RandomString.numeric(12));
+                        new WalletSDK(context, options).getPaymentMethods(request, new IswCallback<WalletResponse>() {
+                            @Override
+                            public void onError(Exception error) {
+                                callbackContext.error(error.getMessage());
+                            }
 
-                        @Override
-                        public void onSuccess(WalletResponse response) {
-                            callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
-                        }
-                    });
-                } catch (Exception ex) {
-                    callbackContext.error(ex.toString());
-                }
-            }
-        });
-    }
-    public void payWithToken(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                try {
-                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
-                    JSONObject params = args.getJSONObject(0);
-                    String currency = params.getString("currency");
-                    String token = params.getString("pan");
-                    String amount = params.getString("amount");
-                    String cardType = params.getString("cardtype");
-                    String panLast4Digits = params.getString("panLast4Digits");
-                    String expiryDate = params.getString("expiryDate");
-                    String customerId = params.getString("customerId");
-                    String description = params.getString("description");
-                    PayWithToken payWithToken = new PayWithToken(activity, customerId, amount, token, expiryDate, currency, cardType, panLast4Digits, description, options, new IswCallback<PurchaseResponse>() {
-                        @Override
-                        public void onError(Exception error) {
-                            callbackContext.error(error.getMessage());
-                        }
-
-                        @Override
-                        public void onSuccess(PurchaseResponse response) {
-                            callbackContext.success(response.getTransactionIdentifier());
-                        }
-                    });
-                    payWithToken.start();
-                } catch (Exception ex) {
-                    callbackContext.error(ex.toString());
+                            @Override
+                            public void onSuccess(WalletResponse response) {
+                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                            }
+                        });
+                    } catch (Exception ex) {
+                        callbackContext.error(ex.toString());
+                    }
+                }else{
+                    Util.notifyNoNetwork(context);
                 }
             }
         });

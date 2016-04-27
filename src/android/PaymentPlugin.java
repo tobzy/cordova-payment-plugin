@@ -15,16 +15,12 @@ import com.interswitchng.sdk.payment.IswCallback;
 import com.interswitchng.sdk.payment.Payment;
 import com.interswitchng.sdk.payment.PurchaseClient;
 import com.interswitchng.sdk.payment.android.PassportSDK;
-
-
 import com.interswitchng.sdk.payment.android.inapp.LoginCredentials;
 import com.interswitchng.sdk.payment.android.util.Util;
 import com.interswitchng.sdk.util.StringUtils;
-
 import com.interswitchng.sdk.payment.model.PaymentMethod;
 import com.interswitchng.sdk.model.User;
 import com.interswitchng.sdk.model.UserInfoRequest;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -176,7 +172,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                 @Override
                 public void run() {
                     try {
-                        payWithOutUI.payWithToken(action, args, callbackContext); //asyncronous call
+                        payWithOutUI.makePayment(action, args, callbackContext); //asyncronous call
                     }
                     catch (Exception error){
                         callbackContext.error(error.toString());
@@ -319,8 +315,14 @@ public class PaymentPlugin extends CordovaPlugin  {
                     Payment.overrideApiBase(params.getString("paymentApi")); // used to override the payment api base url.
                     Passport.overrideApiBase(params.getString("passportApi"));
                 }
-                options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
-                callbackContext.success("Initialization was successfull");
+                if((clientId !=null && clientSecret != null) && (clientId !="" && clientSecret !="")){
+                    options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
+                    callbackContext.success("Initialization was successfull");
+                }
+                else{
+                    callbackContext.error("Invalid ClientId or Client Secret : ");
+                }
+
             } else {
                 callbackContext.error("Invalid ClientId or Client Secret : ");
             }
