@@ -31,4 +31,15 @@
 	<resource-file src="aarfile/payment.jar" target="aarfile/payment.jar" />
     </platform>
 
+    <platform name='ios'>
+        <config-file target='config.xml' parent='/*'>
+          <feature name='PaymentPlugin'>
+            <param name='ios-package' value='PaymentPlugin'/>
+          </feature>
+        </config-file>
+        <source-file src='src/ios/PaymentPlugin.swift'/>
+        
+        <framework src="src/ios/Frameworks/PaymentSDK.framework" custom="true"/>
+    </platform>
+
 </plugin>
