@@ -13,6 +13,9 @@
     <js-module src="www/PaymentPlugin.js" name="PaymentPlugin">
         <clobbers target="PaymentPlugin" />
     </js-module>
+    <js-module src="www/PaymentPluginIos.js" name="PaymentPluginIos">
+        <clobbers target="PaymentPluginIos" />
+    </js-module>
 
     <!-- android -->
     <platform name="android">
@@ -38,7 +41,7 @@
           </feature>
         </config-file>
         <source-file src='src/ios/PaymentPlugin.swift'/>
-        
+
         <framework src="src/ios/Frameworks/PaymentSDK.framework" custom="true"/>
     </platform>
 
