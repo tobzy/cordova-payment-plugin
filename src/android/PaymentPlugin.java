@@ -107,6 +107,7 @@ public class PaymentPlugin extends CordovaPlugin  {
             });
             return true;
         }
+
         else if(action.equals("LoadWallet")){
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -172,7 +173,7 @@ public class PaymentPlugin extends CordovaPlugin  {
                 @Override
                 public void run() {
                     try {
-                        payWithOutUI.makePayment(action, args, callbackContext); //asyncronous call
+                        payWithUI.payWithToken(action, args, callbackContext); //asyncronous call
                     }
                     catch (Exception error){
                         callbackContext.error(error.toString());
