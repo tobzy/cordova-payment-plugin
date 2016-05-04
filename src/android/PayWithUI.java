@@ -54,7 +54,7 @@ public class PayWithUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(PurchaseResponse response) {
-                            callbackContext.success(response.getTransactionIdentifier());
+                            PluginUtils.getPluginResult(callbackContext, response);
                         }
                     });
                     pay.start();
@@ -82,7 +82,7 @@ public class PayWithUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(PurchaseResponse response) {
-                            callbackContext.success(response.getTransactionIdentifier());
+                            PluginUtils.getPluginResult(callbackContext, response);
                         }
                     });
                     pay.start();
@@ -110,7 +110,7 @@ public class PayWithUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(PurchaseResponse response) {
-                            callbackContext.success(response.getTransactionIdentifier());
+                            PluginUtils.getPluginResult(callbackContext, response);
                         }
                     });
                     payWithWallet.start();
@@ -142,7 +142,7 @@ public class PayWithUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(PurchaseResponse response) {
-                            callbackContext.success(response.getTransactionIdentifier());
+                            PluginUtils.getPluginResult(callbackContext, response);
                         }
                     });
                     payWithToken.start();
