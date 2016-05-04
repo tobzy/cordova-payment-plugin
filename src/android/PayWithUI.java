@@ -1,31 +1,23 @@
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaInterface;
+import android.app.Activity;
+import android.content.Context;
 
 import com.interswitchng.sdk.model.RequestOptions;
-
-import com.interswitchng.sdk.payment.model.PurchaseResponse;
-import com.interswitchng.sdk.payment.model.PurchaseRequest;
-import com.interswitchng.sdk.util.RandomString;
+import com.interswitchng.sdk.payment.IswCallback;
 import com.interswitchng.sdk.payment.android.inapp.Pay;
 import com.interswitchng.sdk.payment.android.inapp.PayWithCard;
-import com.interswitchng.sdk.payment.android.inapp.ValidateCard;
-import com.interswitchng.sdk.payment.android.inapp.PayWithWallet;
 import com.interswitchng.sdk.payment.android.inapp.PayWithToken;
+import com.interswitchng.sdk.payment.android.inapp.PayWithWallet;
+import com.interswitchng.sdk.payment.android.inapp.ValidateCard;
+import com.interswitchng.sdk.payment.model.PurchaseResponse;
 import com.interswitchng.sdk.payment.model.ValidateCardResponse;
-import com.interswitchng.sdk.payment.IswCallback;
 
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 public class PayWithUI extends CordovaPlugin{
     private String clientId;
@@ -175,7 +167,7 @@ public class PayWithUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(ValidateCardResponse response) {
-                            callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                            PluginUtils.getPluginResult(callbackContext, response);
                         }
                     });
                     validateCard.start();
