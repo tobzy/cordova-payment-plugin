@@ -1,4 +1,4 @@
-var exec = require('cordova/exec');
+//var exec = require('cordova/exec');
 function PaymentPlugin() {
  //console.log('Payment plugin working');
 }
@@ -31,6 +31,7 @@ PaymentPlugin.prototype.init = function(args){
 PaymentPlugin.prototype.loadWallet  = function(){
     return execPromise("LoadWallet");
 }
+
 PaymentPlugin.prototype.payWithWallet  = function(args){
     return execPromise("PayWithWallet",args);
 }
