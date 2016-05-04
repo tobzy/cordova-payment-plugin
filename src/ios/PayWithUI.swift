@@ -39,14 +39,16 @@ public class PayWithUI {
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
-        addBackButton(cdvPlugin, view: vc.view)
         
+        addBackButton(cdvPlugin, view: vc.view, yPos: 220)
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
     
     
     class func payWithWallet(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
                            theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
+        PayWithUI.cdvPlugin = cdvPlugin
+        
         let payWithWallet = PayWithWallet(clientId: clientId, clientSecret: clientSecret,
                                           customerId: theCustomerId, description: theDescription,
                                           amount: theAmount, currency: theCurrency)
@@ -74,18 +76,19 @@ public class PayWithUI {
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
-        //self.navigationController?.pushViewController(vc, animated: true)
-        //--
-//        let window = UIWindow(frame: UIScreen.mainScreen().bounds)
-//        let viewController = cdvPlugin.viewController!
-//        let navigationController = UINavigationController(rootViewController: viewController)
-//        window.rootViewController = navigationController
-//        window.makeKeyAndVisible()
-        //--
+        let window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let navigationController = UINavigationController(rootViewController: vc)
+        window.rootViewController = navigationController
+        window.makeKeyAndVisible()
+        
+        addBackButton(cdvPlugin, view: vc.view, yPos: 250)
+        
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
 
     class func validatePaymentCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String) {
+        PayWithUI.cdvPlugin = cdvPlugin
+        
         let validateCard = ValidateCard(clientId: clientId, clientSecret: clientSecret, customerId: theCustomerId)
         
         let vc = validateCard.start({(validateCardResponse: ValidateCardResponse?, error: NSError?) in
@@ -111,11 +114,15 @@ public class PayWithUI {
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
+        
+        addBackButton(cdvPlugin, view: vc.view, yPos: 220)
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
 
     class func payWithToken(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
                       theToken:String, theAmount:String, theCurrency:String, theExpiryDate:String, theCardType:String, thePanLast4Digits:String){
+        PayWithUI.cdvPlugin = cdvPlugin
+        
         let payWithToken = PayWithToken(clientId: clientId, clientSecret: clientSecret,
                                         customerId: theCustomerId, description: paymentDescription,
                                         amount:theAmount, token: theToken, currency:theCurrency,
@@ -143,16 +150,18 @@ public class PayWithUI {
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
+        
+        addBackButton(cdvPlugin, view: vc.view, yPos: 220)
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
     
-    class func addBackButton(cdvPlugin:PaymentPlugin, view: UIView) {
+    class func addBackButton(cdvPlugin:PaymentPlugin, view: UIView, yPos: CGFloat) {
         let backButton = UIButton(type: .System)
         
         let screenWidth = view.bounds.width
         let buttonWidth = CGFloat(screenWidth / 5)
         
-        backButton.frame = CGRectMake(0, 220, buttonWidth, 50)
+        backButton.frame = CGRectMake(0, yPos, buttonWidth, 40)
         backButton.setTitle("Back", forState: .Normal)
         styleButton(backButton)
         
@@ -161,9 +170,9 @@ public class PayWithUI {
     }
     
     class func styleButton(theButton: UIButton) {
-        theButton.layer.cornerRadius = 5.0
-        theButton.backgroundColor  = UIColor.blackColor()
-        theButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        //theButton.layer.cornerRadius = 5.0
+        //theButton.backgroundColor  = UIColor.blackColor()
+        theButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
     }
     
     @objc class func backAction() {
