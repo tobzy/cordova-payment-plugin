@@ -18,6 +18,7 @@ import com.interswitchng.sdk.payment.model.WalletRequest;
 import com.interswitchng.sdk.payment.model.WalletResponse;
 import com.interswitchng.sdk.util.RandomString;
 import com.interswitchng.sdk.util.StringUtils;
+import com.interswitchng.sdk.payment.model.Card;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -60,6 +61,8 @@ public class PayWithOutUI extends CordovaPlugin{
                     request.setExpiryDate(params.getString("expiryDate"));
                     request.setCustomerId(params.getString("customerId"));
                     request.setCurrency(params.getString("currency"));
+                    final Card card = new Card(request.getPan(), null, null, null);
+                    final String type = card.getType();
                     new PaymentSDK(context, options).purchase(request, new IswCallback<PurchaseResponse>() {
                         @Override
                         public void onError(Exception error) {
@@ -68,6 +71,8 @@ public class PayWithOutUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(PurchaseResponse response) {
+
+                            response.setCardType(type);
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
 
                                 PluginUtils.getPluginResult(callbackContext, response);
@@ -126,6 +131,7 @@ public class PayWithOutUI extends CordovaPlugin{
                         callbackContext.error("Error : No wallet item selected");
                         return;
                     }
+
                     request.setPan(params.getString("pan"));
                     request.setPinData(params.getString("pin"));
                     request.setRequestorId(params.getString("requestorId"));
@@ -171,6 +177,9 @@ public class PayWithOutUI extends CordovaPlugin{
                     request.setTransactionRef(RandomString.numeric(12));
                     request.setExpiryDate(params.getString("expiryDate"));
                     request.setCustomerId(params.getString("customerId"));
+                    final Card card = new Card(request.getPan(), null, null, null);
+                    final String type = card.getType();
+
                     new PaymentSDK(context, options).validateCard(request, new IswCallback<ValidateCardResponse>() {
                         @Override
                         public void onError(Exception error) {
@@ -180,6 +189,7 @@ public class PayWithOutUI extends CordovaPlugin{
                         @Override
                         public void onSuccess(ValidateCardResponse response) {
                             // Check if OTP is required.
+                            response.setCardType(type);
                             try {
                                 if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
                                     PluginUtils.getPluginResult(callbackContext, response);
