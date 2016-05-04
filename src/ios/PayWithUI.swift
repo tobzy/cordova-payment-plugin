@@ -81,7 +81,15 @@ public class PayWithUI {
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
         
-        addBackButton(cdvPlugin, view: vc.view, yPos: 250)
+        //addBackButton(cdvPlugin, view: vc.view, yPos: 250)
+        let backButton = UIButton(type: .System)
+        let screenWidth = vc.view.bounds.width
+        let buttonWidth = CGFloat(screenWidth / 5)
+        backButton.frame = CGRectMake(0, 250, buttonWidth, 40)
+        backButton.setTitle("Back", forState: .Normal)
+        styleButton(backButton)
+        backButton.addTarget(self, action: #selector(PayWithUI.backActionForPayWithWallet), forControlEvents: .TouchUpInside)
+        vc.view.addSubview(backButton)
         
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
@@ -170,29 +178,14 @@ public class PayWithUI {
     }
     
     class func styleButton(theButton: UIButton) {
-        //theButton.layer.cornerRadius = 5.0
-        //theButton.backgroundColor  = UIColor.blackColor()
         theButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
     }
     
     @objc class func backAction() {
         PayWithUI.cdvPlugin?.viewController?.dismissViewControllerAnimated(true, completion: nil)
     }
-
-    func showError(cdvPlugin: PaymentPlugin, message: String) {
-        let alertVc = UIAlertController(title: "Error", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
-        alertVc.addAction(action)
-        
-        cdvPlugin.viewController?.presentViewController(alertVc, animated: true, completion: nil)
+    
+    @objc class func backActionForPayWithWallet() {
+        PayWithUI.cdvPlugin?.viewController?.dismissViewControllerAnimated(true, completion: nil)
     }
-
-    func showSuccess(cdvPlugin: PaymentPlugin, message: String) {
-        let alertVc = UIAlertController(title: "Success", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
-        alertVc.addAction(action)
-        
-        cdvPlugin.viewController?.presentViewController(alertVc, animated: true, completion: nil)
-    }
-
 }
