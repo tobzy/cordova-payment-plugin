@@ -36,7 +36,7 @@ public class PayWithUI {
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
-        //addBackButton(cdvPlugin: cdvPlugin, vc.view)
+        addBackButton(cdvPlugin, view: vc.view)
         
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
@@ -143,28 +143,28 @@ public class PayWithUI {
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
     
-    func addBackButton(cdvPlugin: PaymentPlugin, view: UIView) {
+    class func addBackButton(cdvPlugin:PaymentPlugin, view: UIView) {
         let backButton = UIButton(type: .System)
         
         let screenWidth = view.bounds.width
         let buttonWidth = CGFloat(screenWidth / 5)
         
-        backButton.frame = CGRectMake(0, 190, buttonWidth, 50)
+        backButton.frame = CGRectMake(0, 220, buttonWidth, 50)
         backButton.setTitle("Back", forState: .Normal)
         styleButton(backButton)
         
-        backButton.addTarget(self, action: #selector(PayWithUI.backAction), forControlEvents: .TouchUpInside)
+        //backButton.addTarget(self, action: #selector(PayWithUI.backAction), forControlEvents: .TouchUpInside)
         view.addSubview(backButton)
     }
     
-    func styleButton(theButton: UIButton) {
+    class func styleButton(theButton: UIButton) {
         theButton.layer.cornerRadius = 5.0
         theButton.backgroundColor  = UIColor.blackColor()
         theButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
     
-    @objc func backAction(sender: CDVPlugin) {
-        sender.viewController?.dismissViewControllerAnimated(true, completion: nil)
+    @objc func backAction(cdvPlugin: PaymentPlugin) {
+        cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
     func showError(cdvPlugin: PaymentPlugin, message: String) {
@@ -184,5 +184,3 @@ public class PayWithUI {
     }
 
 }
-
-
