@@ -1,44 +1,28 @@
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaInterface;
-
-import com.interswitchng.sdk.payment.model.WalletResponse;
-import com.interswitchng.sdk.payment.model.WalletRequest;
-import com.interswitchng.sdk.payment.model.PurchaseResponse;
-import com.interswitchng.sdk.payment.model.PurchaseRequest;
-import com.interswitchng.sdk.util.RandomString;
-import com.interswitchng.sdk.model.RequestOptions;
-import com.interswitchng.sdk.payment.IswCallback;
-import com.interswitchng.sdk.util.StringUtils;
-import com.interswitchng.sdk.payment.android.PaymentSDK;
-import com.interswitchng.sdk.payment.android.WalletSDK;
-import com.interswitchng.sdk.payment.model.AuthorizeOtpRequest;
-import com.interswitchng.sdk.payment.model.AuthorizeOtpResponse;
-
-import com.interswitchng.sdk.payment.model.ValidateCardRequest;
-import com.interswitchng.sdk.payment.model.ValidateCardResponse;
-import com.interswitchng.sdk.payment.model.PaymentStatusResponse;
-import com.interswitchng.sdk.payment.model.PaymentStatusRequest;
-import com.interswitchng.sdk.payment.android.util.Util;
-
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.util.Log;
 
-import java.lang.Double;
-import java.lang.Exception;
-import java.lang.Override;
-import java.lang.Runnable;
-import java.lang.String;
-import java.util.Arrays;
-import java.util.Objects;
+import com.interswitchng.sdk.model.RequestOptions;
+import com.interswitchng.sdk.payment.IswCallback;
+import com.interswitchng.sdk.payment.android.PaymentSDK;
+import com.interswitchng.sdk.payment.android.WalletSDK;
+import com.interswitchng.sdk.payment.android.util.Util;
+import com.interswitchng.sdk.payment.model.AuthorizeOtpRequest;
+import com.interswitchng.sdk.payment.model.AuthorizeOtpResponse;
+import com.interswitchng.sdk.payment.model.PaymentStatusRequest;
+import com.interswitchng.sdk.payment.model.PaymentStatusResponse;
+import com.interswitchng.sdk.payment.model.PurchaseRequest;
+import com.interswitchng.sdk.payment.model.PurchaseResponse;
+import com.interswitchng.sdk.payment.model.ValidateCardRequest;
+import com.interswitchng.sdk.payment.model.ValidateCardResponse;
+import com.interswitchng.sdk.payment.model.WalletRequest;
+import com.interswitchng.sdk.payment.model.WalletResponse;
+import com.interswitchng.sdk.util.RandomString;
+import com.interswitchng.sdk.util.StringUtils;
 
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,10 +70,10 @@ public class PayWithOutUI extends CordovaPlugin{
                         public void onSuccess(PurchaseResponse response) {
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
 
-                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                                PluginUtils.getPluginResult(callbackContext, response);
 
                             } else {
-                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                                PluginUtils.getPluginResult(callbackContext, response);
                             }
                         }
                     });
@@ -116,7 +100,7 @@ public class PayWithOutUI extends CordovaPlugin{
 
                             @Override
                             public void onSuccess(WalletResponse response) {
-                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                                PluginUtils.getPluginResult(callbackContext, response);
                             }
                         });
                     } catch (Exception ex) {
@@ -160,10 +144,10 @@ public class PayWithOutUI extends CordovaPlugin{
                             String transactionIdentifier = response.getTransactionIdentifier();
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
                                 //String otpTransactionIdentifier = response.getOtpTransactionIdentifier();
-                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                                PluginUtils.getPluginResult(callbackContext, response);
 
                             } else {
-                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                                PluginUtils.getPluginResult(callbackContext, response);
                             }
                         }
                     });
@@ -198,9 +182,9 @@ public class PayWithOutUI extends CordovaPlugin{
                             // Check if OTP is required.
                             try {
                                 if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
-                                    callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                                    PluginUtils.getPluginResult(callbackContext, response);
                                 } else {
-                                    callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                                    PluginUtils.getPluginResult(callbackContext, response);
                                 }
                             } catch (Exception ex) {
                                 callbackContext.error(ex.getMessage());
@@ -215,10 +199,10 @@ public class PayWithOutUI extends CordovaPlugin{
         });
     }
     public void authorizeOtp(final String action, final JSONArray args, final CallbackContext callbackContext){
-        cordova.getActivity().runOnUiThread(new Runnable() {
+        context = activity.getApplicationContext();
+        activity.runOnUiThread(new Runnable() {
             public void run() {
                 try {
-                    context = cordova.getActivity().getApplicationContext();
                     options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
                     JSONObject params = args.getJSONObject(0);
                     AuthorizeOtpRequest otpRequest = new AuthorizeOtpRequest();
@@ -233,11 +217,11 @@ public class PayWithOutUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(AuthorizeOtpResponse otpResponse) {
-                            callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, otpResponse));
+                            PluginUtils.getPluginResult(callbackContext, otpResponse);
                         }
                     });
                 } catch (Exception error) {
-                    callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, error.toString()));
+                    PluginUtils.getPluginResult(callbackContext, error.toString());
                 }
             }
         });
@@ -262,7 +246,7 @@ public class PayWithOutUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(PaymentStatusResponse response) {
-                            callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));// Update Payment Status
+                            PluginUtils.getPluginResult(callbackContext, response);// Update Payment Status
                         }
                     });
                 } catch (Exception error) {
