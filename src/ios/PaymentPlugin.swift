@@ -1,171 +1,163 @@
 import UIKit
 import PaymentSDK
+import SwiftyJSON
 
 
 @objc(PaymentPlugin) class PaymentPlugin : CDVPlugin {
+    private static var clientId : String = ""
+    private static var clientSecret : String = ""
     
-  func overrideApiBase() {
-    Passport.overrideApiBase("https://qa.interswitchng.com/passport")
-    Payment.overrideApiBase("https://qa.interswitchng.com")
-  }
     
-  func payWithCard(command: CDVInvokedUrlCommand) {
-	let theClientId = command.arguments[0] as? String ?? ""
-    let theClientSecret = command.arguments[1]  as? String ?? ""
-    let theCustomerId = command.arguments[2]  as? String ?? ""
-    let paymentDescription = command.arguments[3] as? String ?? ""
-    
-    let theAmount = command.arguments[4]  as? String ?? ""
-    let theCurrency = command.arguments[5] as? String ?? ""
-    overrideApiBase();
-    //--
-    let payWithCard = PayWithCard(clientId: theClientId, clientSecret: theClientSecret,
-                                  customerId: theCustomerId, description: paymentDescription,
-                                  amount:theAmount, currency:theCurrency)
-    
-    let vc = payWithCard.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
-        guard error == nil else {
-            let errMsg = (error?.localizedDescription)!
+    func pluginInit (command: CDVInvokedUrlCommand) {
+        guard (command.arguments != nil) else {
+            let errMsg = "Invalid ClientId or Client Secret"
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
             self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            self.viewController?.dismissViewControllerAnimated(true, completion: nil)
             return
         }
-        guard let response = purchaseResponse else {
-            let failureMsg = (error?.localizedFailureReason)!
+        
+        let firstArg = command.arguments[0] as? String ?? ""
+        if let firstArgAsData = firstArg.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+            let firstArgAsJson = JSON(data: firstArgAsData)
             
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            self.viewController?.dismissViewControllerAnimated(true, completion: nil)
-            return
-        }
-        
-        //Handling success
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: response.transactionIdentifier)
-        self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-        self.viewController?.dismissViewControllerAnimated(true, completion: nil)
-    })
-    self.viewController?.presentViewController(vc, animated: true, completion: nil)
-  }
-    
-    func payWithWallet(command: CDVInvokedUrlCommand) {
-        let theClientId = command.arguments[0] as? String ?? ""
-        let theClientSecret = command.arguments[1]  as? String ?? ""
-        let theCustomerId = command.arguments[2]  as? String ?? ""
-        let paymentDescription = command.arguments[3] as? String ?? ""
-        
-        let theAmount = command.arguments[4]  as? String ?? ""
-        let theCurrency = command.arguments[5] as? String ?? ""
-        overrideApiBase();
-        //--
-//        let vc = UIViewController(nibName: nil, bundle: nil)
-//        let window = UIWindow(frame: UIScreen.mainScreen().bounds)
-//        let navigationController = UINavigationController(rootViewController: vc)
-//        window.rootViewController = navigationController
-//        window.makeKeyAndVisible()
-        
-        let payWithWallet = PayWithWallet(clientId: theClientId, clientSecret: theClientSecret,
-                                          customerId: theCustomerId, description: paymentDescription,
-                                          amount: theAmount, currency: theCurrency)
-        let vc = payWithWallet.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
-            guard error == nil else {
-                let errMsg = (error?.localizedDescription)!
+            do {
+                let theClientId : String = firstArgAsJson["clientId"].stringValue
+                let theClientSecret : String = firstArgAsJson["clientSecret"].stringValue
+                let paymentApi : String = firstArgAsJson["paymentApi"].stringValue
+                let passportApi : String = firstArgAsJson["passportApi"].stringValue
                 
+                if paymentApi.characters.count > 0 && passportApi.characters.count > 0 {
+                    Passport.overrideApiBase(paymentApi)
+                    Payment.overrideApiBase(passportApi)
+                }
+                if theClientId.length > 0 && theClientSecret.length > 0 {
+                    PayWithUI.clientId = theClientId
+                    PayWithUI.clientSecret = theClientSecret
+                    PayWithoutUI.clientId = theClientId
+                    PayWithoutUI.clientSecret = theClientSecret
+                    
+                    let successMsg = "Initialization was successfull"
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMsg)
+                    self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
+                } else {
+                    let errMsg = "Invalid ClientId or Client Secret"
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
+                    self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
+                }
+            } catch _ {
+                let errMsg = "Invalid ClientId or Client Secret"
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
                 self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-                self.viewController?.dismissViewControllerAnimated(true, completion: nil)
-                return
             }
-            
-            guard let response = purchaseResponse else {
-                let failureMsg = (error?.localizedFailureReason)!
-                
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-                self.viewController?.dismissViewControllerAnimated(true, completion: nil)
-                return
-            }
-            //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: response.transactionIdentifier)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            self.viewController?.dismissViewControllerAnimated(true, completion: nil)
-        })
+        }
+    }
+    
+    
+    func payWithCard(command: CDVInvokedUrlCommand) {
+        let firstArg = command.arguments[0] as? String ?? ""
         
-        //self.navigationController?.pushViewController(vc, animated: true)
-        self.viewController?.presentViewController(vc, animated: true, completion: nil)
+        if let firstArgAsData = firstArg.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+            let firstArgAsJson = JSON(data: firstArgAsData)
+            do {
+                let theCustomerId : String = firstArgAsJson["customerId"].stringValue
+                let theCurrency : String = firstArgAsJson["currency"].stringValue
+                let theDescription : String = firstArgAsJson["description"].stringValue
+                let theAmount : String = firstArgAsJson["amount"].stringValue
+                
+                PayWithUI.payWithCard(self, cdvCommand: command, theCustomerId: theCustomerId, theCurrency: theCurrency,
+                                      theDescription: theDescription, theAmount: theAmount)
+            } catch _ {
+                let errMsg = "Some arguments passed to 'payWithCard' are invalid"
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
+                self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
+            }
+        } else {
+            let errMsg = "Please check the arguments passed to 'payWithCard'"
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
+            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
+        }
+    }
+    
+    func payWithWallet(command: CDVInvokedUrlCommand) {
+        let firstArg = command.arguments[0] as? String ?? ""
+        
+        if let firstArgAsData = firstArg.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+            let firstArgAsJson = JSON(data: firstArgAsData)
+            do {
+                let theCustomerId : String = firstArgAsJson["customerId"].stringValue
+                let theCurrency : String = firstArgAsJson["currency"].stringValue
+                let theDescription : String = firstArgAsJson["description"].stringValue
+                let theAmount : String = firstArgAsJson["amount"].stringValue
+                
+                PayWithUI.payWithWallet(self, cdvCommand: command, theCustomerId: theCustomerId, theCurrency: theCurrency,
+                                      theDescription: theDescription, theAmount: theAmount)
+            } catch _ {
+                let errMsg = "Some arguments passed to 'payWithWallet' are invalid"
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
+                self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
+            }
+        } else {
+            let errMsg = "Please check the arguments passed to 'payWithWallet'"
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
+            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
+        }
     }
     
     func validatePaymentCard(command: CDVInvokedUrlCommand) {
-        let theClientId = command.arguments[0] as? String ?? ""
-        let theClientSecret = command.arguments[1]  as? String ?? ""
-        let theCustomerId = command.arguments[2]  as? String ?? ""
-        overrideApiBase();
+        let firstArg = command.arguments[0] as? String ?? ""
         
-        let validateCard = ValidateCard(clientId: theClientId, clientSecret: theClientSecret,
-                                        customerId: theCustomerId)
-        let vc = validateCard.start({(validateCardResponse: ValidateCardResponse?, error: NSError?) in
-            guard error == nil else {
-                let errMsg = (error?.localizedDescription)!
-                
+        if let firstArgAsData = firstArg.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+            let firstArgAsJson = JSON(data: firstArgAsData)
+            
+            do {
+                let theCustomerId : String = firstArgAsJson["customerId"].stringValue
+                PayWithUI.validatePaymentCard(self, cdvCommand: command, theCustomerId: theCustomerId)
+            } catch _ {
+                let errMsg = "Some arguments passed to 'validatePaymentCard' are invalid"
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
                 self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-                self.viewController?.dismissViewControllerAnimated(true, completion: nil)
-                return
             }
-            
-            guard let response = validateCardResponse else {
-                let failureMsg = (error?.localizedFailureReason)!
-                
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-                self.viewController?.dismissViewControllerAnimated(true, completion: nil)
-                return
-            }
-            //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: response.message)
+        } else {
+            let errMsg = "Some arguments passed to 'validatePaymentCard' are invalid"
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
             self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            self.viewController?.dismissViewControllerAnimated(true, completion: nil)
-        })
-        self.viewController?.presentViewController(vc, animated: true, completion: nil)
+        }
     }
     
-    func payWithToken(clId theClientId: String, cls theClientSecret: String){
-//        let payWithToken = PayWithToken(clientId: theClientId, clientSecret: theClientSecret,
-//                                        customerId: theCustomerId, description: paymentDescription,
-//                                        amount: theAmount, token: theToken, currency: "NGN",
-//                                        expiryDate: "2004", cardType: theCardType, last4Digits: "7499")
-//        let vc = payWithToken.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
-//            guard error == nil else {
-//                let errMsg = (error?.localizedDescription)!
-//                self.showError(errMsg)
-//                return
-//            }
-//            
-//            guard let response = purchaseResponse else {
-//                let failureMsg = (error?.localizedFailureReason)!
-//                self.showError(failureMsg)
-//                return
-//            }
-//            
-//            self.showSuccess("Ref: " + response.transactionIdentifier)
-//        })
-//        self.viewController?.presentViewController(vc, animated: true, completion: nil)
-    }
-    
-    func showError(message: String) {
-        let alertVc = UIAlertController(title: "Error", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
-        alertVc.addAction(action)
+    func payWithToken(command: CDVInvokedUrlCommand){
+        let firstArg = command.arguments[0] as? String ?? ""
         
-        self.viewController?.presentViewController(alertVc, animated: true, completion: nil)
-    }
-    
-    func showSuccess(message: String) {
-        let alertVc = UIAlertController(title: "Success", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
-        alertVc.addAction(action)
-        
-        self.viewController?.presentViewController(alertVc, animated: true, completion: nil)
+        if let firstArgAsData = firstArg.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) {
+            let firstArgAsJson = JSON(data: firstArgAsData)
+            do {
+                let theCustomerId : String = firstArgAsJson["customerId"].stringValue
+                
+                let theDescription : String = firstArgAsJson["description"].stringValue
+                let theToken : String = firstArgAsJson["pan"].stringValue
+                let theAmount : String = firstArgAsJson["amount"].stringValue
+                let theCurrency : String = firstArgAsJson["currency"].stringValue
+                let theExpiryDate : String = firstArgAsJson["expiryDate"].stringValue
+                let theCardType : String = firstArgAsJson["cardtype"].stringValue
+                let thePanLast4Digits : String = firstArgAsJson["panLast4Digits"].stringValue
+                
+                PayWithUI.payWithToken(self, cdvCommand: command, theCustomerId: theCustomerId, paymentDescription: theDescription,
+                                       theToken: theToken, theAmount: theAmount, theCurrency:theCurrency,
+                                       theExpiryDate: theExpiryDate, theCardType: theCardType, thePanLast4Digits: thePanLast4Digits)
+            } catch _ {
+                let errMsg = "Some arguments passed to 'payWithToken' are invalid"
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
+                self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
+            }
+        } else {
+            let errMsg = "Please check the arguments passed to 'payWithToken'"
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
+            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
+        }
     }
 }
 
+extension String {
+    var length: Int {
+        return (self as NSString).length
+    }
+}

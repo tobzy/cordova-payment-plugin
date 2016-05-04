@@ -41,8 +41,11 @@
           </feature>
         </config-file>
         <source-file src='src/ios/PaymentPlugin.swift'/>
+        <source-file src='src/ios/PayWithoutUI.swift'/>
+        <source-file src='src/ios/PayWithUI.swift'/>
 
         <framework src="src/ios/Frameworks/PaymentSDK.framework" custom="true"/>
     </platform>
 
+    <dependency id="cordova-plugin-add-swift-support" url="https://github.com/akofman/cordova-plugin-add-swift-support"/>
 </plugin>

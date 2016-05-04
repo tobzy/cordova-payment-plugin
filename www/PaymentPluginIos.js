@@ -1,8 +1,9 @@
 var exec = require('cordova/exec');
 
 function ensureArray(arg) {
-	if (!Array.isArray(arg))
-		arg = [arg];
+               if (!Array.isArray(arg)) {
+                    arg = [JSON.stringify(arg)];
+               }
 	return arg;
 }
 
@@ -13,7 +14,7 @@ function paymentAction (action) {
 	}
 }
 
-exports.init = paymentAction("Init");
+exports.init = paymentAction("pluginInit");
 
 exports.payWithCard = paymentAction("payWithCard");
 exports.payWithWallet = paymentAction("payWithWallet");
@@ -27,5 +28,4 @@ exports.validatePaymentCard = paymentAction("validatePaymentCard");
 // exports.paymentStatus = paymentAction("PaymentStatus");
 // exports.payWithToken = paymentAction("PayWithToken");
 // exports.userInformation = paymentAction("UserInformation");
-
 
