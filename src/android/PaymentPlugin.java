@@ -1,43 +1,23 @@
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaInterface;
-
-import android.util.Log;
-import android.provider.Settings;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.app.Activity;
+import android.content.Context;
+import android.widget.Button;
 
 import com.interswitchng.sdk.auth.Passport;
 import com.interswitchng.sdk.model.RequestOptions;
-import com.interswitchng.sdk.payment.IswCallback;
-import com.interswitchng.sdk.payment.Payment;
-import com.interswitchng.sdk.payment.PurchaseClient;
-import com.interswitchng.sdk.payment.android.PassportSDK;
-import com.interswitchng.sdk.payment.android.inapp.LoginCredentials;
-import com.interswitchng.sdk.payment.android.util.Util;
-import com.interswitchng.sdk.util.StringUtils;
-import com.interswitchng.sdk.payment.model.PaymentMethod;
 import com.interswitchng.sdk.model.User;
 import com.interswitchng.sdk.model.UserInfoRequest;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
+import com.interswitchng.sdk.payment.IswCallback;
+import com.interswitchng.sdk.payment.Payment;
+import com.interswitchng.sdk.payment.android.PassportSDK;
+import com.interswitchng.sdk.payment.android.inapp.LoginCredentials;
 
-import java.lang.Double;
-import java.lang.Exception;
-import java.lang.Override;
-import java.lang.Runnable;
-import java.lang.String;
-import java.util.Arrays;
-import java.util.Objects;
-
-import com.google.gson.Gson;
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Babajide.Apata
