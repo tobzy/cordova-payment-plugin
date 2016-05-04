@@ -5,10 +5,13 @@ import PaymentSDK
 public class PayWithUI {
     public static var clientId : String = ""
     public static var clientSecret : String = ""
-
+    private static var cdvPlugin : PaymentPlugin?
+    
     
     class func payWithCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
                            theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
+        PayWithUI.cdvPlugin = cdvPlugin
+        
         let payWithCard = PayWithCard(clientId: clientId, clientSecret: clientSecret,
                                       customerId: theCustomerId, description: theDescription,
                                       amount:theAmount, currency:theCurrency)
@@ -153,7 +156,7 @@ public class PayWithUI {
         backButton.setTitle("Back", forState: .Normal)
         styleButton(backButton)
         
-        //backButton.addTarget(self, action: #selector(PayWithUI.backAction), forControlEvents: .TouchUpInside)
+        backButton.addTarget(self, action: #selector(PayWithUI.backAction), forControlEvents: .TouchUpInside)
         view.addSubview(backButton)
     }
     
@@ -163,8 +166,8 @@ public class PayWithUI {
         theButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
     }
     
-    @objc func backAction(cdvPlugin: PaymentPlugin) {
-        cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+    @objc class func backAction() {
+        PayWithUI.cdvPlugin?.viewController?.dismissViewControllerAnimated(true, completion: nil)
     }
 
     func showError(cdvPlugin: PaymentPlugin, message: String) {
