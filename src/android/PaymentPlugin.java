@@ -267,8 +267,9 @@ public class PaymentPlugin extends CordovaPlugin  {
                 try {
                     options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
                     final LoginCredentials loginCredentials = new LoginCredentials();
-                    loginCredentials.setUsername(args.getString(0));
-                    loginCredentials.setPassword(args.getString(1));
+                    JSONObject params = args.getJSONObject(0);
+                    loginCredentials.setUsername(params.getString("username"));
+                    loginCredentials.setPassword(params.getString("password"));
                     UserInfoRequest userInfoRequest = new UserInfoRequest();
                     userInfoRequest.setUsername(loginCredentials.getUsername());
                     new PassportSDK(activity, options).getUserInfo(userInfoRequest, new IswCallback<User>() {
@@ -290,11 +291,11 @@ public class PaymentPlugin extends CordovaPlugin  {
 
                                     @Override
                                     public void onSuccess(Object otpResponse) {
-                                        callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, otpResponse));
+                                        PluginUtils.getPluginResult(callbackContext, otpResponse);
                                     }
                                 });
                             } else {
-                                callbackContext.sendPluginResult(PluginUtils.getPluginResult(callbackContext, response));
+                                PluginUtils.getPluginResult(callbackContext, response);
                             }
                         }
                     });
