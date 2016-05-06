@@ -11,9 +11,6 @@
     <js-module name="PaymentPlugin" src="www/PaymentPlugin.js">
         <clobbers target="PaymentPlugin" />
     </js-module>
-    <js-module src="www/PaymentPluginIos.js" name="PaymentPluginIos">
-        <clobbers target="PaymentPluginIos" />
-    </js-module>
     <js-module name="jquery" src="www/jquery.js">
         <clobbers target="jquery" />
     </js-module>

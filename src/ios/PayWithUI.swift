@@ -7,6 +7,8 @@ public class PayWithUI {
     public static var clientSecret : String = ""
     private static var cdvPlugin : PaymentPlugin?
     
+    private static var currentVc : UIViewController?
+    
     
     class func payWithCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
                            theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
@@ -40,8 +42,9 @@ public class PayWithUI {
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
-        addBackButton(cdvPlugin, view: vc.view, yPos: 220)
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
+        currentVc = vc
+        addBackMenuItem(vc)
     }
     
     
@@ -81,17 +84,9 @@ public class PayWithUI {
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
         
-        //addBackButton(cdvPlugin, view: vc.view, yPos: 250)
-        let backButton = UIButton(type: .System)
-        let screenWidth = vc.view.bounds.width
-        let buttonWidth = CGFloat(screenWidth / 5)
-        backButton.frame = CGRectMake(0, 250, buttonWidth, 40)
-        backButton.setTitle("Back", forState: .Normal)
-        styleButton(backButton)
-        backButton.addTarget(self, action: #selector(PayWithUI.backActionForPayWithWallet), forControlEvents: .TouchUpInside)
-        vc.view.addSubview(backButton)
-        
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
+        currentVc = vc
+        addBackMenuItem(vc)
     }
 
     class func validatePaymentCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String) {
@@ -123,12 +118,11 @@ public class PayWithUI {
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
-        addBackButton(cdvPlugin, view: vc.view, yPos: 220)
+        //addBackButton(cdvPlugin, view: vc.view, yPos: 220)
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
 
-    class func payWithToken(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
-                      theToken:String, theAmount:String, theCurrency:String, theExpiryDate:String, theCardType:String, thePanLast4Digits:String){
+    class func payWithToken(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String, theToken:String, theAmount:String, theCurrency:String, theExpiryDate:String, theCardType:String, thePanLast4Digits:String){
         PayWithUI.cdvPlugin = cdvPlugin
         
         let payWithToken = PayWithToken(clientId: clientId, clientSecret: clientSecret,
@@ -159,30 +153,46 @@ public class PayWithUI {
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
-        addBackButton(cdvPlugin, view: vc.view, yPos: 220)
+        //addBackButton(cdvPlugin, view: vc.view, yPos: 220)
         cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
     }
     
-    class func addBackButton(cdvPlugin:PaymentPlugin, view: UIView, yPos: CGFloat) {
-        let backButton = UIButton(type: .System)
+    class func addBackMenuItem(sdkVc: UIViewController) {
+        let navigationBar = UINavigationBar(frame: CGRect(x: 0, y:15, width: (sdkVc.view.frame.size.width), height: 44))
+        navigationBar.backgroundColor = UIColor.whiteColor()
         
-        let screenWidth = view.bounds.width
-        let buttonWidth = CGFloat(screenWidth / 5)
+        let navigationItem = UINavigationItem()
+        navigationItem.title = ""
         
-        backButton.frame = CGRectMake(0, yPos, buttonWidth, 40)
-        backButton.setTitle("Back", forState: .Normal)
-        styleButton(backButton)
+        let leftButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: cdvPlugin, action: #selector(PayWithUI.backAction))
         
-        backButton.addTarget(self, action: #selector(PayWithUI.backAction), forControlEvents: .TouchUpInside)
-        view.addSubview(backButton)
+        navigationItem.leftBarButtonItem = leftButton
+        navigationBar.items = [navigationItem]
+        
+        sdkVc.view.addSubview(navigationBar)
     }
+    
+//    class func addBackButton(cdvPlugin:PaymentPlugin, view: UIView, yPos: CGFloat) {
+//        let backButton = UIButton(type: .System)
+//        
+//        let screenWidth = view.bounds.width
+//        let buttonWidth = CGFloat(screenWidth / 5)
+//        
+//        backButton.frame = CGRectMake(0, yPos, buttonWidth, 40)
+//        backButton.setTitle("Back", forState: .Normal)
+//        styleButton(backButton)
+//        
+//        backButton.addTarget(self, action: #selector(PayWithUI.backAction), forControlEvents: .TouchUpInside)
+//        view.addSubview(backButton)
+//    }
     
     class func styleButton(theButton: UIButton) {
         theButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
     }
     
     @objc class func backAction() {
-        PayWithUI.cdvPlugin?.viewController?.dismissViewControllerAnimated(true, completion: nil)
+        //PayWithUI.cdvPlugin?.viewController?.dismissViewControllerAnimated(true, completion: nil)
+        currentVc!.dismissViewControllerAnimated(true, completion: nil)
     }
     
     @objc class func backActionForPayWithWallet() {
