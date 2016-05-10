@@ -68,7 +68,8 @@ public class PayWithUI {
                 
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
                 cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
-                cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+                window?.rootViewController = cdvPlugin.viewController!
+                window?.makeKeyAndVisible()
                 return
             }
             
@@ -77,13 +78,18 @@ public class PayWithUI {
                 
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
                 cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
-                cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+                window?.rootViewController = cdvPlugin.viewController!
+                window?.makeKeyAndVisible()
                 return
             }
             //Handling success
+            let theMsgAsString =  response.toJsonString()
+            print("Wallet json response: \(theMsgAsString) \n")
+            
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: response.toJsonString())
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
-            cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+            window?.rootViewController = cdvPlugin.viewController!
+            window?.makeKeyAndVisible()
         })
         addBackButton(vc)
         
