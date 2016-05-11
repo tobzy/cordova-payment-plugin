@@ -51,7 +51,7 @@ public class PayWithUI {
         isSdkVcShownForWallet = false
         
         let navController = UINavigationController(rootViewController: vc)
-        addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(navController)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
@@ -98,7 +98,7 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(navController)
         
         if(window == nil) {
             if let app = UIApplication.sharedApplication().delegate as? CDVAppDelegate, let keyWindow = app.window {
@@ -150,7 +150,7 @@ public class PayWithUI {
         isSdkVcShownForWallet = false
         
         let navController = UINavigationController(rootViewController: vc)
-        addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(navController)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
@@ -191,7 +191,7 @@ public class PayWithUI {
         isSdkVcShownForWallet = false
         
         let navController = UINavigationController(rootViewController: vc)
-        addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(navController)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
