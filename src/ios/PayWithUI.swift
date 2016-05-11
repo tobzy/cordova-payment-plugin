@@ -48,11 +48,13 @@ public class PayWithUI {
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         vc.view.addGestureRecognizer(screenTap)
         
-        currentVc = vc
-        addBackButton(vc)
         isSdkVcShownForWallet = false
         
-        cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: vc)
+        addBackNavigationMenuItem(navController)
+        
+        cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
+        currentVc = navController
     }
     
     class func payWithWallet(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
@@ -91,17 +93,22 @@ public class PayWithUI {
             window?.rootViewController = cdvPlugin.viewController!
             window?.makeKeyAndVisible()
         })
-        addBackButton(vc)
+        
+        let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        vc.view.addGestureRecognizer(screenTap)
+        
+        let navController = UINavigationController(rootViewController: vc)
+        addBackNavigationMenuItem(navController)
         
         if(window == nil) {
             if let app = UIApplication.sharedApplication().delegate as? CDVAppDelegate, let keyWindow = app.window {
                 window = keyWindow
             }
         }
-        window!.rootViewController = vc
+        window!.rootViewController = navController
         window!.makeKeyAndVisible()
         
-        currentVc = vc
+        currentVc = navController
         isSdkVcShownForWallet = true
     }
     
@@ -140,11 +147,13 @@ public class PayWithUI {
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         vc.view.addGestureRecognizer(screenTap)
         
-        currentVc = vc
-        addBackButton(vc)
         isSdkVcShownForWallet = false
         
-        cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: vc)
+        addBackNavigationMenuItem(navController)
+        
+        cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
+        currentVc = navController
     }
     
     class func validatePaymentCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String) {
@@ -179,11 +188,13 @@ public class PayWithUI {
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         vc.view.addGestureRecognizer(screenTap)
         
-        currentVc = vc
-        addBackButton(vc)
         isSdkVcShownForWallet = false
         
-        cdvPlugin.viewController?.presentViewController(vc, animated: true, completion: nil)
+        let navController = UINavigationController(rootViewController: vc)
+        addBackNavigationMenuItem(navController)
+        
+        cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
+        currentVc = navController
     }
     
     
@@ -191,15 +202,21 @@ public class PayWithUI {
         currentVc!.view.endEditing(true)
     }
     
-    class func addBackButton(sdkVc: UIViewController) {
+    class func addBackNavigationMenuItem(sdkVc: UIViewController) {
         let view : UIView = sdkVc.view
-        let backButton = UIButton(type: .System)
-        let buttonWidth = CGFloat(view.bounds.width / 5)
         
-        backButton.frame = CGRectMake(5, view.bounds.height - 40, buttonWidth, 40)
-        backButton.setTitle("Back", forState: .Normal)
-        backButton.addTarget(self, action: #selector(PayWithUI.backAction), forControlEvents: .TouchUpInside)
-        view.addSubview(backButton)
+        let navigationBar = UINavigationBar(frame: CGRect(x: 5, y:25, width: (sdkVc.view.frame.size.width), height: 44))
+        navigationBar.backgroundColor = UIColor.whiteColor()
+        
+        let navigationItem = UINavigationItem()
+        navigationItem.title = "Pay"
+        
+        let leftButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(PayWithUI.backAction))
+        
+        navigationItem.leftBarButtonItem = leftButton
+        navigationBar.items = [navigationItem]
+        
+        view.addSubview(navigationBar)
     }
     
     @objc class func backAction() {
