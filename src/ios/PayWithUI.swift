@@ -40,7 +40,7 @@ public class PayWithUI {
             }
             
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: response.toJsonString())
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
@@ -85,10 +85,7 @@ public class PayWithUI {
                 return
             }
             //Handling success
-            let theMsgAsString =  response.toJsonString()
-            print("Wallet json response: \(theMsgAsString) \n")
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: response.toJsonString())
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
             window?.rootViewController = cdvPlugin.viewController!
             window?.makeKeyAndVisible()
@@ -139,7 +136,7 @@ public class PayWithUI {
             }
             
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: response.toJsonString())
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
@@ -180,7 +177,7 @@ public class PayWithUI {
                 return
             }
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: response.toJsonString())
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
@@ -226,46 +223,5 @@ public class PayWithUI {
         } else {
             currentVc?.dismissViewControllerAnimated(true, completion: nil)
         }
-    }
-}
-
-extension PurchaseResponse {
-    func toJsonString() -> String {
-        var selfDataAsDict = [String:AnyObject]()
-        
-        selfDataAsDict["transactionIdentifier"] = self.transactionIdentifier
-        selfDataAsDict["transactionRef"] = self.transactionRef
-        
-        if let theToken = self.token {
-            if theToken.characters.count > 0 {
-                selfDataAsDict["token"] = theToken
-            }
-        }
-        if let theTokenExpiry = self.tokenExpiryDate {
-            if theTokenExpiry.characters.count > 0 {
-                selfDataAsDict["tokenExpiryDate"] = theTokenExpiry
-            }
-        }
-        if let thePanLast4 = self.panLast4Digits {
-            if thePanLast4.characters.count > 0 {
-                selfDataAsDict["panLast4Digits"] = thePanLast4
-            }
-        }
-        if let theCardType = self.cardType {
-            if theCardType.characters.count > 0 {
-                selfDataAsDict["cardType"] = theCardType
-            }
-        }
-        if let theBalance = self.balance {
-            if theBalance.characters.count > 0 {
-                selfDataAsDict["balance"] = theBalance
-            }
-        }
-        do {
-            let jsonNSData = try NSJSONSerialization.dataWithJSONObject(selfDataAsDict, options: NSJSONWritingOptions(rawValue: 0))
-            return String(data: jsonNSData, encoding: NSUTF8StringEncoding)!
-        } catch _ {
-        }
-        return ""
     }
 }

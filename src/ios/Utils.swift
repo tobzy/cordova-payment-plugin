@@ -1,0 +1,92 @@
+//
+//  Created by Efe Ariaroo on 10/05/2016.
+//  Copyright © 2016 Interswitch Limited. All rights reserved.
+
+import UIKit
+import PaymentSDK
+
+
+public class Utils {
+    
+    class public func getJsonOfPurchaseResponse(purchaseResObj : PurchaseResponse) -> String {
+        var purchaseResponseAsDict = [String:AnyObject]()
+        
+        purchaseResponseAsDict["transactionIdentifier"] = purchaseResObj.transactionIdentifier
+        purchaseResponseAsDict["transactionRef"] = purchaseResObj.transactionRef
+        purchaseResponseAsDict["message"] = purchaseResObj.message
+        
+        if let theToken = purchaseResObj.token {
+            if theToken.characters.count > 0 {
+                purchaseResponseAsDict["token"] = theToken
+            }
+        }
+        if let theTokenExpiry = purchaseResObj.tokenExpiryDate {
+            if theTokenExpiry.characters.count > 0 {
+                purchaseResponseAsDict["tokenExpiryDate"] = theTokenExpiry
+            }
+        }
+        if let thePanLast4 = purchaseResObj.panLast4Digits {
+            if thePanLast4.characters.count > 0 {
+                purchaseResponseAsDict["panLast4Digits"] = thePanLast4
+            }
+        }
+        if let theCardType = purchaseResObj.cardType {
+            if theCardType.characters.count > 0 {
+                purchaseResponseAsDict["cardType"] = theCardType
+            }
+        }
+        if let theBalance = purchaseResObj.balance {
+            if theBalance.characters.count > 0 {
+                purchaseResponseAsDict["balance"] = theBalance
+            }
+        }
+        
+        do {
+            let jsonNSData = try NSJSONSerialization.dataWithJSONObject(purchaseResponseAsDict, options: NSJSONWritingOptions(rawValue: 0))
+            return String(data: jsonNSData, encoding: NSUTF8StringEncoding)!
+        } catch _ {
+        }
+        return ""
+    }
+    
+    class func getJsonOfPaymentMethods(thePaymentMethods: [PaymentMethod]) -> String {
+        var result : String = ""
+        do {
+            let listOfDicts : [Dictionary] = thePaymentMethods.map { return getDictOfPayment($0) }
+            let jsonNSData = try NSJSONSerialization.dataWithJSONObject(listOfDicts, options: NSJSONWritingOptions(rawValue: 0))
+            result = String(data: jsonNSData, encoding: NSUTF8StringEncoding)!
+            
+            result = "{ \"paymentMethods\": \(result) }"
+        } catch _ {
+        }
+        return result
+    }
+    
+    class func getJsonOfPaymentStatus(thePaymentStatus: PaymentStatusResponse) -> String {
+        var paymentStatusAsDict = [String:AnyObject]()
+        
+        paymentStatusAsDict["message"] = thePaymentStatus.message
+        paymentStatusAsDict["transactionRef"] = thePaymentStatus.transactionRef
+        paymentStatusAsDict["amount"] = thePaymentStatus.amount
+        paymentStatusAsDict["transactionDate"] = thePaymentStatus.transactionDate
+        paymentStatusAsDict["panLast4Digits"] = thePaymentStatus.panLast4Digits
+        
+        do {
+            let jsonNSData = try NSJSONSerialization.dataWithJSONObject(paymentStatusAsDict, options: NSJSONWritingOptions(rawValue: 0))
+            return String(data: jsonNSData, encoding: NSUTF8StringEncoding)!
+        } catch _ {
+        }
+        return ""
+    }
+    
+    class private func getDictOfPayment(thePaymentMethod: PaymentMethod) -> Dictionary<String, AnyObject> {
+        var paymentMethodAsDict = [String:AnyObject]()
+        
+        paymentMethodAsDict["cardProduct"] = thePaymentMethod.cardProduct
+        paymentMethodAsDict["panLast4Digits"] = thePaymentMethod.panLast4Digits
+        paymentMethodAsDict["token"] = thePaymentMethod.token
+        
+        return paymentMethodAsDict
+    }
+
+}
