@@ -8,29 +8,6 @@ import PaymentSDK
 
 public class Utils {
     
-    static var dateFormatter = NSDateFormatter()
-    
-    class func getStringFromDict (theDict: [String : AnyObject], theKey: String) -> String {
-        var result : String? = ""
-        
-        if let theValue = theDict[theKey] as? Int {
-            result = String(theValue)
-        } else if let theValue = theDict[theKey] as? String {
-            result = theValue
-        }
-        return result!
-    }
-    
-    class func sendErrorBackToJavascript(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, errMsg: String) {
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-        cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
-    }
-    
-    class func sendSuccessBackToJavascript(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, successMsg: String) {
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMsg)
-        cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
-    }
-    
     class public func getJsonOfPurchaseResponse(purchaseResObj : PurchaseResponse) -> String {
         var purchaseResponseAsDict = [String:AnyObject]()
         
@@ -63,11 +40,6 @@ public class Utils {
                 purchaseResponseAsDict["balance"] = theBalance
             }
         }
-        if let otpTransactionIdentifier = purchaseResObj.otpTransactionIdentifier {
-            if otpTransactionIdentifier.characters.count > 0 {
-                purchaseResponseAsDict["otpTransactionIdentifier"] = otpTransactionIdentifier
-            }
-        }
         
         do {
             let jsonNSData = try NSJSONSerialization.dataWithJSONObject(purchaseResponseAsDict, options: NSJSONWritingOptions(rawValue: 0))
@@ -84,7 +56,7 @@ public class Utils {
             let jsonNSData = try NSJSONSerialization.dataWithJSONObject(listOfDicts, options: NSJSONWritingOptions(rawValue: 0))
             result = String(data: jsonNSData, encoding: NSUTF8StringEncoding)!
             
-            result = "{\"paymentMethods\": \(result)}"
+            result = "{ \"paymentMethods\": \(result) }"
         } catch _ {
         }
         return result
@@ -96,11 +68,7 @@ public class Utils {
         paymentStatusAsDict["message"] = thePaymentStatus.message
         paymentStatusAsDict["transactionRef"] = thePaymentStatus.transactionRef
         paymentStatusAsDict["amount"] = thePaymentStatus.amount
-        
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        let transactionDateAsString = dateFormatter.stringFromDate(thePaymentStatus.transactionDate)
-        
-        paymentStatusAsDict["transactionDate"] = transactionDateAsString
+        paymentStatusAsDict["transactionDate"] = thePaymentStatus.transactionDate
         paymentStatusAsDict["panLast4Digits"] = thePaymentStatus.panLast4Digits
         
         do {
@@ -109,10 +77,6 @@ public class Utils {
         } catch _ {
         }
         return ""
-    }
-    
-    class func getJsonForAuthorizeOtpResponse(theOtpAuthorizeResponse: AuthorizeOtpResponse) -> String {
-        return "{\"transactionRef\": \"\(theOtpAuthorizeResponse.transactionRef)\"}"
     }
     
     class private func getDictOfPayment(thePaymentMethod: PaymentMethod) -> Dictionary<String, AnyObject> {
@@ -125,11 +89,4 @@ public class Utils {
         return paymentMethodAsDict
     }
 
-    class func showError(cdvPlugin: PaymentPlugin, message: String) {
-        let alertVc = UIAlertController(title: "Error", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
-        alertVc.addAction(action)
-        
-        cdvPlugin.viewController?.presentViewController(alertVc, animated: true, completion: nil)
-    }
 }
