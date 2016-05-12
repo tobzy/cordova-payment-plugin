@@ -16,7 +16,7 @@ public class PayWithoutUI {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
         let request = PurchaseRequest(customerId: theCustomerId, amount: theAmount, pan: thePan,
-                                      pin: thePin, transactionRef: Payment.randomStringWithLength(12),
+                                      pin: thePin, expiryDate: theExpiryDate, cvv2: theCvv, transactionRef: Payment.randomStringWithLength(12),
                                       currency: theCurrency, requestorId: "")
         
         purchaseSdk.purchase(request, completionHandler:{(purchaseResponse: PurchaseResponse?, error: NSError?) in

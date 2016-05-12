@@ -8,6 +8,9 @@ import PaymentSDK
 
 public class Utils {
     
+    static var dateFormatter = NSDateFormatter()
+    
+    
     class func sendErrorBackToJavascript(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, errMsg: String) {
         let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
         cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
@@ -78,7 +81,11 @@ public class Utils {
         paymentStatusAsDict["message"] = thePaymentStatus.message
         paymentStatusAsDict["transactionRef"] = thePaymentStatus.transactionRef
         paymentStatusAsDict["amount"] = thePaymentStatus.amount
-        paymentStatusAsDict["transactionDate"] = thePaymentStatus.transactionDate
+        
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        let transactionDateAsString = dateFormatter.stringFromDate(thePaymentStatus.transactionDate)
+        
+        paymentStatusAsDict["transactionDate"] = transactionDateAsString
         paymentStatusAsDict["panLast4Digits"] = thePaymentStatus.panLast4Digits
         
         do {
