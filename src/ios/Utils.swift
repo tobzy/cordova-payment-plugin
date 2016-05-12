@@ -8,6 +8,16 @@ import PaymentSDK
 
 public class Utils {
     
+    class func sendErrorBackToJavascript(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, errMsg: String) {
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
+        cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+    }
+    
+    class func sendSuccessBackToJavascript(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, successMsg: String) {
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMsg)
+        cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+    }
+    
     class public func getJsonOfPurchaseResponse(purchaseResObj : PurchaseResponse) -> String {
         var purchaseResponseAsDict = [String:AnyObject]()
         
@@ -56,7 +66,7 @@ public class Utils {
             let jsonNSData = try NSJSONSerialization.dataWithJSONObject(listOfDicts, options: NSJSONWritingOptions(rawValue: 0))
             result = String(data: jsonNSData, encoding: NSUTF8StringEncoding)!
             
-            result = "{ \"paymentMethods\": \(result) }"
+            result = "{\"paymentMethods\": \(result)}"
         } catch _ {
         }
         return result
@@ -89,4 +99,11 @@ public class Utils {
         return paymentMethodAsDict
     }
 
+    class func showError(cdvPlugin: PaymentPlugin, message: String) {
+        let alertVc = UIAlertController(title: "Error", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil)
+        alertVc.addAction(action)
+        
+        cdvPlugin.viewController?.presentViewController(alertVc, animated: true, completion: nil)
+    }
 }
