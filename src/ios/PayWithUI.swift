@@ -48,17 +48,16 @@ public class PayWithUI {
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         vc.view.addGestureRecognizer(screenTap)
         
-        isSdkVcShownForWallet = false
-        
         let navController = UINavigationController(rootViewController: vc)
         //addBackNavigationMenuItem(navController)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
+        isSdkVcShownForWallet = false
     }
     
     class func payWithWallet(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
-                           theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
+                             theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
         let payWithWallet = PayWithWallet(clientId: cdvPlugin.clientId, clientSecret: cdvPlugin.clientSecret,
@@ -144,13 +143,12 @@ public class PayWithUI {
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         vc.view.addGestureRecognizer(screenTap)
         
-        isSdkVcShownForWallet = false
-        
         let navController = UINavigationController(rootViewController: vc)
         //addBackNavigationMenuItem(navController)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
+        isSdkVcShownForWallet = false
     }
     
     class func validatePaymentCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String) {
@@ -185,13 +183,12 @@ public class PayWithUI {
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         vc.view.addGestureRecognizer(screenTap)
         
-        isSdkVcShownForWallet = false
-        
         let navController = UINavigationController(rootViewController: vc)
         //addBackNavigationMenuItem(navController)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
+        isSdkVcShownForWallet = false
     }
     
     
