@@ -49,6 +49,7 @@
         <source-file src='src/ios/PaymentPlugin.swift'/>
         <source-file src='src/ios/PayWithoutUI.swift'/>
         <source-file src='src/ios/PayWithUI.swift'/>
+        <source-file src='src/ios/Utils.swift'/>
 
         <framework src="src/ios/Frameworks/PaymentSDK.framework" custom="true"/>
     </platform>
