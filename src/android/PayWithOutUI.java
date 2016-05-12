@@ -1,13 +1,16 @@
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 
 import com.interswitchng.sdk.model.RequestOptions;
 import com.interswitchng.sdk.payment.IswCallback;
 import com.interswitchng.sdk.payment.android.PaymentSDK;
 import com.interswitchng.sdk.payment.android.WalletSDK;
+import com.interswitchng.sdk.payment.android.LoginFragment;
 import com.interswitchng.sdk.payment.android.util.Util;
 import com.interswitchng.sdk.payment.model.AuthorizeOtpRequest;
 import com.interswitchng.sdk.payment.model.AuthorizeOtpResponse;
+import com.interswitchng.sdk.payment.model.Card;
 import com.interswitchng.sdk.payment.model.PaymentStatusRequest;
 import com.interswitchng.sdk.payment.model.PaymentStatusResponse;
 import com.interswitchng.sdk.payment.model.PurchaseRequest;
@@ -18,7 +21,6 @@ import com.interswitchng.sdk.payment.model.WalletRequest;
 import com.interswitchng.sdk.payment.model.WalletResponse;
 import com.interswitchng.sdk.util.RandomString;
 import com.interswitchng.sdk.util.StringUtils;
-import com.interswitchng.sdk.payment.model.Card;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -31,7 +33,7 @@ import org.json.JSONObject;
 public class PayWithOutUI extends CordovaPlugin{
     private String clientId;
     private String clientSecret;
-
+    private WalletSDK sdk;
     private Activity activity;
     private Context context;
 
@@ -89,7 +91,7 @@ public class PayWithOutUI extends CordovaPlugin{
         });
     }
     public  void loadWallet(final String action, final CallbackContext callbackContext) throws JSONException {
-        context = activity.getApplicationContext();
+        context = activity;
         activity.runOnUiThread(new Runnable() {
             public void run() {
                 final WalletRequest request = new WalletRequest();
