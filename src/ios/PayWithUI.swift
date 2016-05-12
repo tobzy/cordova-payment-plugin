@@ -203,7 +203,7 @@ public class PayWithUI {
         navigationBar.backgroundColor = UIColor.whiteColor()
         
         let navigationItem = UINavigationItem()
-        navigationItem.title = "Pay"
+        //navigationItem.title = "Pay"
         
         let leftButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(PayWithUI.backAction))
         
