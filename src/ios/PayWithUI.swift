@@ -13,7 +13,7 @@ public class PayWithUI {
     private static var window : UIWindow?
     
     
-    class func payWithCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
+    class func payWithCard(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
                            theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
@@ -25,23 +25,20 @@ public class PayWithUI {
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             guard let response = purchaseResponse else {
                 let failureMsg = (error?.localizedFailureReason)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
@@ -56,7 +53,7 @@ public class PayWithUI {
         isSdkVcShownForWallet = false
     }
     
-    class func payWithWallet(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
+    class func payWithWallet(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
                              theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
@@ -67,8 +64,7 @@ public class PayWithUI {
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
                 window?.rootViewController = cdvPlugin.viewController!
                 window?.makeKeyAndVisible()
                 return
@@ -77,15 +73,13 @@ public class PayWithUI {
             guard let response = purchaseResponse else {
                 let failureMsg = (error?.localizedFailureReason)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 window?.rootViewController = cdvPlugin.viewController!
                 window?.makeKeyAndVisible()
                 return
             }
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
             window?.rootViewController = cdvPlugin.viewController!
             window?.makeKeyAndVisible()
         })
@@ -108,7 +102,7 @@ public class PayWithUI {
         isSdkVcShownForWallet = true
     }
     
-    class func payWithToken(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
+    class func payWithToken(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
                             theToken:String, theAmount:String, theCurrency:String, theExpiryDate:String, theCardType:String, thePanLast4Digits:String){
         PayWithUI.cdvPlugin = cdvPlugin
         
@@ -120,23 +114,21 @@ public class PayWithUI {
         let vc = payWithToken.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             guard let response = purchaseResponse else {
                 let failureMsg = (error?.localizedFailureReason)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
@@ -151,7 +143,7 @@ public class PayWithUI {
         isSdkVcShownForWallet = false
     }
     
-    class func validatePaymentCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String) {
+    class func validatePaymentCard(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
         let validateCard = ValidateCard(clientId: cdvPlugin.clientId, clientSecret: cdvPlugin.clientSecret, customerId: theCustomerId)
@@ -160,8 +152,7 @@ public class PayWithUI {
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
@@ -169,14 +160,12 @@ public class PayWithUI {
             guard let response = validateCardResponse else {
                 let failureMsg = (error?.localizedFailureReason)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
