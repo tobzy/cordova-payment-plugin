@@ -8,6 +8,7 @@ import com.interswitchng.sdk.payment.android.WalletSDK;
 import com.interswitchng.sdk.payment.android.util.Util;
 import com.interswitchng.sdk.payment.model.AuthorizeOtpRequest;
 import com.interswitchng.sdk.payment.model.AuthorizeOtpResponse;
+import com.interswitchng.sdk.payment.model.Card;
 import com.interswitchng.sdk.payment.model.PaymentStatusRequest;
 import com.interswitchng.sdk.payment.model.PaymentStatusResponse;
 import com.interswitchng.sdk.payment.model.PurchaseRequest;
@@ -31,7 +32,7 @@ import org.json.JSONObject;
 public class PayWithOutUI extends CordovaPlugin{
     private String clientId;
     private String clientSecret;
-
+    private WalletSDK sdk;
     private Activity activity;
     private Context context;
 
@@ -89,7 +90,7 @@ public class PayWithOutUI extends CordovaPlugin{
         });
     }
     public  void loadWallet(final String action, final CallbackContext callbackContext) throws JSONException {
-        context = activity.getApplicationContext();
+        context = activity;
         activity.runOnUiThread(new Runnable() {
             public void run() {
                 final WalletRequest request = new WalletRequest();
@@ -100,11 +101,13 @@ public class PayWithOutUI extends CordovaPlugin{
                         new WalletSDK(context, options).getPaymentMethods(request, new IswCallback<WalletResponse>() {
                             @Override
                             public void onError(Exception error) {
+                                Util.hideProgressDialog();
                                 callbackContext.error(error.getMessage());
                             }
 
                             @Override
                             public void onSuccess(WalletResponse response) {
+                                Util.hideProgressDialog();
                                 PluginUtils.getPluginResult(callbackContext, response);
                             }
                         });
