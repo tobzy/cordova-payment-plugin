@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PaymentPlugin.iml" filepath="$PROJECT_DIR$/PaymentPlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cordova-payment-plugin.iml" filepath="$PROJECT_DIR$/cordova-payment-plugin.iml" />
     </modules>
   </component>
 </project>
