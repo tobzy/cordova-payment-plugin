@@ -188,7 +188,7 @@ public class PayWithUI {
     class func addBackNavigationMenuItem(sdkVc: UIViewController) {
         let view : UIView = sdkVc.view
         
-        let navigationBar = UINavigationBar(frame: CGRect(x: 5, y:25, width: (sdkVc.view.frame.size.width), height: 44))
+        let navigationBar = UINavigationBar(frame: CGRect(x: 0, y:30, width: 3 * (sdkVc.view.frame.size.width), height: 25))
         navigationBar.backgroundColor = UIColor.whiteColor()
         
         let navigationItem = UINavigationItem()
