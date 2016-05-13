@@ -14,6 +14,7 @@
     <js-module name="jquery" src="www/jquery.js">
         <clobbers target="jquery" />
     </js-module>
+
     <!-- android -->
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
@@ -39,4 +40,19 @@
         <resource-file src="libs/payment.jar" target="libs/payment.jar" />
     </platform>
 
+    <platform name='ios'>
+        <config-file target='config.xml' parent='/*'>
+          <feature name='PaymentPlugin'>
+            <param name='ios-package' value='PaymentPlugin'/>
+          </feature>
+        </config-file>
+        <source-file src='src/ios/PaymentPlugin.swift'/>
+        <source-file src='src/ios/PayWithoutUI.swift'/>
+        <source-file src='src/ios/PayWithUI.swift'/>
+        <source-file src='src/ios/Utils.swift'/>
+
+        <framework src="src/ios/Frameworks/PaymentSDK.framework" custom="true"/>
+    </platform>
+
+    <dependency id="cordova-plugin-add-swift-support" url="https://github.com/akofman/cordova-plugin-add-swift-support"/>
 </plugin>

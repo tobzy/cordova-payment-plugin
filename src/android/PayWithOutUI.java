@@ -19,6 +19,7 @@ import com.interswitchng.sdk.payment.model.WalletRequest;
 import com.interswitchng.sdk.payment.model.WalletResponse;
 import com.interswitchng.sdk.util.RandomString;
 import com.interswitchng.sdk.util.StringUtils;
+import com.interswitchng.sdk.payment.model.Card;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
