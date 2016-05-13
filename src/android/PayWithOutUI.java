@@ -1,12 +1,10 @@
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 
 import com.interswitchng.sdk.model.RequestOptions;
 import com.interswitchng.sdk.payment.IswCallback;
 import com.interswitchng.sdk.payment.android.PaymentSDK;
 import com.interswitchng.sdk.payment.android.WalletSDK;
-import com.interswitchng.sdk.payment.android.LoginFragment;
 import com.interswitchng.sdk.payment.android.util.Util;
 import com.interswitchng.sdk.payment.model.AuthorizeOtpRequest;
 import com.interswitchng.sdk.payment.model.AuthorizeOtpResponse;
@@ -102,11 +100,13 @@ public class PayWithOutUI extends CordovaPlugin{
                         new WalletSDK(context, options).getPaymentMethods(request, new IswCallback<WalletResponse>() {
                             @Override
                             public void onError(Exception error) {
+                                Util.hideProgressDialog();
                                 callbackContext.error(error.getMessage());
                             }
 
                             @Override
                             public void onSuccess(WalletResponse response) {
+                                Util.hideProgressDialog();
                                 PluginUtils.getPluginResult(callbackContext, response);
                             }
                         });
