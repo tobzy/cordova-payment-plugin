@@ -10,6 +10,16 @@ public class Utils {
     
     static var dateFormatter = NSDateFormatter()
     
+    class func getStringFromDict (theDict: [String : AnyObject], theKey: String) -> String {
+        var result : String? = ""
+        
+        if let theValue = theDict[theKey] as? Int {
+            result = String(theValue)
+        } else if let theValue = theDict[theKey] as? String {
+            result = theValue
+        }
+        return result!
+    }
     
     class func sendErrorBackToJavascript(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, errMsg: String) {
         let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)

@@ -13,112 +13,81 @@ import SwiftyJSON
     
     
     func Init (command: CDVInvokedUrlCommand) {
-        guard (command.arguments != nil) else {
-            let errMsg = "Seems no arguments were passed to 'Init'"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let theClientId: String? = firstArg?.valueForKey("clientId") as? String
-        let theClientSecret: String? = firstArg?.valueForKey("clientSecret") as? String
-        let paymentApi: String? = firstArg?.valueForKey("paymentApi") as? String
-        let passportApi: String? = firstArg?.valueForKey("passportApi") as? String
+        let theClientId = Utils.getStringFromDict(firstArg!, theKey: "clientId")
+        let theClientSecret = Utils.getStringFromDict(firstArg!, theKey: "clientSecret")
+        let paymentApi = Utils.getStringFromDict(firstArg!, theKey: "paymentApi")
+        let passportApi = Utils.getStringFromDict(firstArg!, theKey: "passportApi")
         
-        if paymentApi?.length > 0 && passportApi?.length > 0 {
-            Payment.overrideApiBase(paymentApi!)
-            Passport.overrideApiBase(passportApi!)
+        if paymentApi.length > 0 && passportApi.length > 0 {
+            Payment.overrideApiBase(paymentApi)
+            Passport.overrideApiBase(passportApi)
         }
-        if theClientId?.length > 0 && theClientSecret?.length > 0 {
-            self.clientId = theClientId!
-            self.clientSecret = theClientSecret!
+        if theClientId.length > 0 && theClientSecret.length > 0 {
+            self.clientId = theClientId
+            self.clientSecret = theClientSecret
             
             let successMsg = "Initialization was successfull"
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMsg)
             self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
         } else {
-            let errMsg = "Invalid ClientId or Client Secret"
+            let errMsg = "Intialization was not successful. Arguments passed to 'Init' should all be strings."
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
             self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
         }
     }
     
     func PayWithCard(command: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let theCustomerId: String? = firstArg?.valueForKey("customerId") as? String
-        let theCurrency: String? = firstArg?.valueForKey("currency") as? String
-        let theDescription: String? = firstArg?.valueForKey("description") as? String
-        let theAmount: String? = firstArg?.valueForKey("amount") as? String
+        let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
+        let amountAsString = Utils.getStringFromDict(firstArg!, theKey: "amount")
+        //--
+        let theCurrency = firstArg?["currency"] as? String
+        let theDescription = firstArg?["description"] as? String
         
-        PayWithUI.payWithCard(self, cdvCommand: command, theCustomerId: theCustomerId!, theCurrency: theCurrency!,
-                              theDescription: theDescription!, theAmount: theAmount!)
+        PayWithUI.payWithCard(self, cdvCommand: command, theCustomerId: customerIdAsString, theCurrency: theCurrency!,
+                              theDescription: theDescription!, theAmount: amountAsString)
     }
     
     func PayWithWallet(command: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let theCustomerId: String? = firstArg?.valueForKey("customerId") as? String
-        let theCurrency: String? = firstArg?.valueForKey("currency") as? String
-        let theDescription: String? = firstArg?.valueForKey("description") as? String
-        let theAmount: String? = firstArg?.valueForKey("amount") as? String
+        let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
+        let amountAsString = Utils.getStringFromDict(firstArg!, theKey: "amount")
+        //--
+        let theCurrency = firstArg?["currency"] as? String
+        let theDescription = firstArg?["description"] as? String
         
-        PayWithUI.payWithWallet(self, cdvCommand: command, theCustomerId: theCustomerId!, theCurrency: theCurrency!,
-                              theDescription: theDescription!, theAmount: theAmount!)
+        PayWithUI.payWithWallet(self, cdvCommand: command, theCustomerId: customerIdAsString, theCurrency: theCurrency!,
+                                theDescription: theDescription!, theAmount: amountAsString)
     }
     
     func PayWithToken(command: CDVInvokedUrlCommand){
-        guard self.clientId.length > 0 && self.clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let theCurrency: String? = firstArg?.valueForKey("currency") as? String
-        let theToken: String? = firstArg?.valueForKey("pan") as? String
-        let theAmount: String? = firstArg?.valueForKey("amount") as? String
-        let theCardType: String? = firstArg?.valueForKey("cardtype") as? String
-        let thePanLast4Digits: String? = firstArg?.valueForKey("panLast4Digits") as? String
-        let theExpiryDate: String? = firstArg?.valueForKey("expiryDate") as? String
-        let theCustomerId: String? = firstArg?.valueForKey("customerId") as? String
-        let theDescription: String? = firstArg?.valueForKey("description") as? String
+        let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
+        let amountAsString = Utils.getStringFromDict(firstArg!, theKey: "amount")
+        let tokenAsString = Utils.getStringFromDict(firstArg!, theKey: "pan")
+        let panLast4DigitsAsString = Utils.getStringFromDict(firstArg!, theKey: "panLast4Digits")
+        let expiryDateAsString = Utils.getStringFromDict(firstArg!, theKey: "expiryDate")
+        //--
+        let theCurrency = firstArg?["currency"] as? String
+        let theDescription = firstArg?["description"] as? String
+        let theCardType = firstArg?["cardtype"] as? String
         
-        PayWithUI.payWithToken(self, cdvCommand: command, theCustomerId: theCustomerId!, paymentDescription: theDescription!,
-                               theToken: theToken!, theAmount: theAmount!, theCurrency:theCurrency!,
-                               theExpiryDate: theExpiryDate!, theCardType: theCardType!, thePanLast4Digits: thePanLast4Digits!)
+        PayWithUI.payWithToken(self, cdvCommand: command, theCustomerId: customerIdAsString, paymentDescription: theDescription!,
+                               theToken: tokenAsString, theAmount: amountAsString, theCurrency:theCurrency!,
+                               theExpiryDate: expiryDateAsString, theCardType: theCardType!, thePanLast4Digits: panLast4DigitsAsString)
     }
     
     func ValidatePaymentCard(command: CDVInvokedUrlCommand) {
-        guard self.clientId.length > 0 && self.clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let theCustomerId: String? = firstArg?.valueForKey("customerId") as? String
+        let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
         
-        PayWithUI.validatePaymentCard(self, cdvCommand: command, theCustomerId: theCustomerId!)
+        PayWithUI.validatePaymentCard(self, cdvCommand: command, theCustomerId: customerIdAsString)
     }
     
     
@@ -126,111 +95,71 @@ import SwiftyJSON
     
     
     func MakePayment(command: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let pan: String? = firstArg?.valueForKey("pan") as? String
-        let amount: String? = firstArg?.valueForKey("amount") as? String
-        let cvv: String? = firstArg?.valueForKey("cvv") as? String
-        let pin: String? = firstArg?.valueForKey("pin") as? String
-        let expiryDate: String? = firstArg?.valueForKey("expiryDate") as? String
-        let customerId: String? = firstArg?.valueForKey("customerId") as? String
-        let currency: String? = firstArg?.valueForKey("currency") as? String
+        let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
+        let pan = Utils.getStringFromDict(firstArg!, theKey: "pan")
+        let amount = Utils.getStringFromDict(firstArg!, theKey: "amount")
+        let cvv = Utils.getStringFromDict(firstArg!, theKey: "cvv")
+        let pin = Utils.getStringFromDict(firstArg!, theKey: "pin")
+        let expiryDate = Utils.getStringFromDict(firstArg!, theKey: "expiryDate")
+        //--
+        let currency = firstArg?["currency"] as? String
         
-        PayWithoutUI.makePayment(self, cdvCommand: command, thePan: pan!, theAmount: amount!, theCvv: cvv!,
-                                 thePin: pin!, theExpiryDate: expiryDate!, theCustomerId: customerId!, theCurrency: currency!)
+        PayWithoutUI.makePayment(self, cdvCommand: command, thePan: pan, theAmount: amount, theCvv: cvv,
+                                 thePin: pin, theExpiryDate: expiryDate, theCustomerId: customerId, theCurrency: currency!)
     }
     
     func LoadWallet(command: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
         PayWithoutUI.loadWallet(self, cdvCommand: command)
     }
     
     func PayWithWalletSDK(command: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let customerId: String? = firstArg?.valueForKey("customerId") as? String
-        let amount: String? = firstArg?.valueForKey("amount") as? String
-        let theTokenOfPaymentMethod: String? = firstArg?.valueForKey("pan") as? String
-        let pin: String? = firstArg?.valueForKey("pin") as? String
-        let requestorId: String? = firstArg?.valueForKey("requestorId") as? String
-        let currency: String? = firstArg?.valueForKey("currency") as? String
+        let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
+        let theTokenOfPaymentMethod = Utils.getStringFromDict(firstArg!, theKey: "pan")
+        let amount = Utils.getStringFromDict(firstArg!, theKey: "amount")
+        let requestorId = Utils.getStringFromDict(firstArg!, theKey: "requestorId")
+        let pin = Utils.getStringFromDict(firstArg!, theKey: "pin")
+        let currency = Utils.getStringFromDict(firstArg!, theKey: "currency")
         
-        PayWithoutUI.payWithWallet(self, cdvCommand: command, theCustomerId: customerId!, theAmount: amount!,
-                                   tokenOfUserSelectedPaymentMethod: theTokenOfPaymentMethod!, thePin: pin!,
-                                   theCurrency: currency!, theRequestorId: requestorId!)
+        PayWithoutUI.payWithWallet(self, cdvCommand: command, theCustomerId: customerId, theAmount: amount,
+                                   tokenOfUserSelectedPaymentMethod: theTokenOfPaymentMethod, thePin: pin,
+                                   theCurrency: currency, theRequestorId: requestorId)
     }
     
     func PaymentStatus(command: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let transactionRef: String? = firstArg?.valueForKey("transactionRef") as? String
-        let amount: String? = firstArg?.valueForKey("amount") as? String
+        let transactionRef = Utils.getStringFromDict(firstArg!, theKey: "transactionRef")
+        let amount = Utils.getStringFromDict(firstArg!, theKey: "amount")
         
-        PayWithoutUI.paymentStatus(self, cdvCommand: command, theTransactionRef: transactionRef!, theAmount: amount!)
+        PayWithoutUI.paymentStatus(self, cdvCommand: command, theTransactionRef: transactionRef, theAmount: amount)
     }
     
     func ValidateCard(command: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let pan: String? = firstArg?.valueForKey("pan") as? String
-        let cvv: String? = firstArg?.valueForKey("cvv") as? String
-        let pin: String? = firstArg?.valueForKey("pin") as? String
-        let expiryDate: String? = firstArg?.valueForKey("expiryDate") as? String
-        let customerId: String? = firstArg?.valueForKey("customerId") as? String
+        let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
+        let pan = Utils.getStringFromDict(firstArg!, theKey: "pan")
+        let cvv = Utils.getStringFromDict(firstArg!, theKey: "cvv")
+        let pin = Utils.getStringFromDict(firstArg!, theKey: "pin")
+        let expiryDate = Utils.getStringFromDict(firstArg!, theKey: "expiryDate")
         
-        PayWithoutUI.validateCard(self, cdvCommand: command, thePan: pan!, theCvv: cvv!,
-                                  thePin: pin!, theExpiryDate: expiryDate!, theCustomerId: customerId!)
+        PayWithoutUI.validateCard(self, cdvCommand: command, thePan: pan, theCvv: cvv,
+                                  thePin: pin, theExpiryDate: expiryDate, theCustomerId: customerId)
     }
     
     func AuthorizeOTP(command: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "Payment plugin has not been properly initialized"
-            
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-            return
-        }
-        let firstArg = command.arguments[0] as? NSDictionary
+        let firstArg = command.arguments[0] as? [String:AnyObject]
         
-        let otp: String? = firstArg?.valueForKey("otp") as? String
-        let otpTransId: String? = firstArg?.valueForKey("otpTransactionIdentifier") as? String
-        let otpTransRef: String? = firstArg?.valueForKey("transactionRef") as? String
+        let otp = Utils.getStringFromDict(firstArg!, theKey: "otp")
+        let otpTransId = Utils.getStringFromDict(firstArg!, theKey: "otpTransactionIdentifier")
+        let otpTransRef = Utils.getStringFromDict(firstArg!, theKey: "transactionRef")
         
-        PayWithoutUI.authorizeOtp(self, cdvCommand: command, theOtp: otp!, theOtpTransactionId: otpTransId!, theOtpTransactionRef: otpTransRef!)
+        PayWithoutUI.authorizeOtp(self, cdvCommand: command, theOtp: otp, theOtpTransactionId: otpTransId,
+                                  theOtpTransactionRef: otpTransRef)
     }
 }
 
