@@ -46,7 +46,7 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        //addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(vc)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
@@ -88,7 +88,7 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        //addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(vc)
         
         if(window == nil) {
             if let app = UIApplication.sharedApplication().delegate as? CDVAppDelegate, let keyWindow = app.window {
@@ -136,7 +136,7 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        //addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(vc)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
@@ -173,7 +173,7 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        //addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(vc)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
@@ -185,21 +185,11 @@ public class PayWithUI {
         currentVc!.view.endEditing(true)
     }
     
-    class func addBackNavigationMenuItem(sdkVc: UIViewController) {
-        let view : UIView = sdkVc.view
-        
-        let navigationBar = UINavigationBar(frame: CGRect(x: 0, y:30, width: 3 * (sdkVc.view.frame.size.width), height: 25))
-        navigationBar.backgroundColor = UIColor.whiteColor()
-        
-        let navigationItem = UINavigationItem()
-        //navigationItem.title = "Pay"
-        
+    class func addBackNavigationMenuItem(currentlyDisplayedVc: UIViewController) {
         let leftButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(PayWithUI.backAction))
-        
-        navigationItem.leftBarButtonItem = leftButton
-        navigationBar.items = [navigationItem]
-        
-        view.addSubview(navigationBar)
+
+        //currentlyDisplayedVc.navigationItem.title = "Pay"
+        currentlyDisplayedVc.navigationItem.leftBarButtonItem = leftButton
     }
     
     @objc class func backAction() {
