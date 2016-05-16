@@ -153,7 +153,8 @@ public class PayWithOutUI extends CordovaPlugin{
                             if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
                                 //String otpTransactionIdentifier = response.getOtpTransactionIdentifier();
                                 PluginUtils.getPluginResult(callbackContext, response);
-
+                                /*String otpTransactionIdentifier = response.getOtpTransactionIdentifier();
+                                Util.prompt(activity, "OTP", response.getMessage(), "Close", "Continue", true, 1L);*/
                             } else {
                                 PluginUtils.getPluginResult(callbackContext, response);
                             }

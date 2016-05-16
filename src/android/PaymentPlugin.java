@@ -299,14 +299,11 @@ public class PaymentPlugin extends CordovaPlugin  {
                 }
                 if((clientId !=null && clientSecret != null) && (clientId !="" && clientSecret !="")){
                     options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
-                    callbackContext.success("Initialization was successfull");
+                    //callbackContext.success("Initialization was successfull");
                 }
                 else{
-                    callbackContext.error("Invalid ClientId or Client Secret : ");
+                    //callbackContext.error("Invalid ClientId or Client Secret : ");
                 }
-
-            } else {
-                callbackContext.error("Invalid ClientId or Client Secret : ");
             }
         }
         catch (JSONException jsonException){
