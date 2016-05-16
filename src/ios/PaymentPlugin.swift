@@ -27,12 +27,6 @@ import SwiftyJSON
         if theClientId.length > 0 && theClientSecret.length > 0 {
             self.clientId = theClientId
             self.clientSecret = theClientSecret
-            
-            let successMsg = "Initialization was successfull"
-            Utils.sendSuccessBackToJavascript(self, cdvCommand: command, successMsg: successMsg)
-        } else {
-            let errMsg = "Intialization was not successful. Arguments passed to 'Init' should all be strings."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: command, errMsg: errMsg)
         }
     }
     
@@ -41,11 +35,6 @@ import SwiftyJSON
     
     
     func PayWithCard(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
@@ -59,11 +48,6 @@ import SwiftyJSON
     }
     
     func PayWithWallet(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
@@ -77,11 +61,6 @@ import SwiftyJSON
     }
     
     func PayWithToken(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
@@ -100,11 +79,6 @@ import SwiftyJSON
     }
     
     func ValidatePaymentCard(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
@@ -117,11 +91,6 @@ import SwiftyJSON
     
     
     func MakePayment(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
@@ -138,20 +107,10 @@ import SwiftyJSON
     }
     
     func LoadWallet(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         PayWithoutUI.loadWallet(self, command: cdvCommand)
     }
     
     func PayWithWalletSDK(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
@@ -167,11 +126,6 @@ import SwiftyJSON
     }
     
     func PaymentStatus(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let transactionRef = Utils.getStringFromDict(firstArg!, theKey: "transactionRef")
@@ -181,11 +135,6 @@ import SwiftyJSON
     }
     
     func ValidateCard(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
@@ -199,11 +148,6 @@ import SwiftyJSON
     }
     
     func AuthorizeOTP(cdvCommand: CDVInvokedUrlCommand) {
-        guard clientId.length > 0 && clientSecret.length > 0 else {
-            let errMsg = "clientId and clientSecret have not been set."
-            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
-            return
-        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let otp = Utils.getStringFromDict(firstArg!, theKey: "otp")
