@@ -63,6 +63,11 @@ public class Utils {
                 purchaseResponseAsDict["balance"] = theBalance
             }
         }
+        if let otpTransactionIdentifier = purchaseResObj.otpTransactionIdentifier {
+            if otpTransactionIdentifier.characters.count > 0 {
+                purchaseResponseAsDict["otpTransactionIdentifier"] = otpTransactionIdentifier
+            }
+        }
         
         do {
             let jsonNSData = try NSJSONSerialization.dataWithJSONObject(purchaseResponseAsDict, options: NSJSONWritingOptions(rawValue: 0))
