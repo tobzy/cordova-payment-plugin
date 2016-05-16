@@ -147,6 +147,11 @@ import SwiftyJSON
     }
     
     func PayWithWalletSDK(cdvCommand: CDVInvokedUrlCommand) {
+        guard clientId.length > 0 && clientSecret.length > 0 else {
+            let errMsg = "clientId and clientSecret have not been set."
+            Utils.sendErrorBackToJavascript(self, cdvCommand: cdvCommand, errMsg: errMsg)
+            return
+        }
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
