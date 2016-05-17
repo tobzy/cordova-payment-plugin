@@ -183,7 +183,7 @@ public class PayWithoutUI {
             }
             //OTP successful
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: "Success")
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonForAuthorizeOtpResponse(authorizeOtpResponse!))
         })
     }
 }
