@@ -111,6 +111,10 @@ public class Utils {
         return ""
     }
     
+    class func getJsonForAuthorizeOtpResponse(theOtpAuthorizeResponse: AuthorizeOtpResponse) -> String {
+        return "{\"transactionRef\": \"\(theOtpAuthorizeResponse.transactionRef)\"}"
+    }
+    
     class private func getDictOfPayment(thePaymentMethod: PaymentMethod) -> Dictionary<String, AnyObject> {
         var paymentMethodAsDict = [String:AnyObject]()
         
