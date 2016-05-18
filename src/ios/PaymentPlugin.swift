@@ -33,6 +33,18 @@ import SwiftyJSON
     
     //---------- With SDK UI
     
+    func Pay(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
+        
+        let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
+        let amountAsString = Utils.getStringFromDict(firstArg!, theKey: "amount")
+        //--
+        let theCurrency = firstArg?["currency"] as? String
+        let theDescription = firstArg?["description"] as? String
+        
+        PayWithUI.payWithCardOrWallet(self, command: cdvCommand, theCustomerId: customerIdAsString, theCurrency: theCurrency!,
+                                      theDescription: theDescription!, theAmount: amountAsString)
+    }
     
     func PayWithCard(cdvCommand: CDVInvokedUrlCommand) {
         let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]

@@ -9,10 +9,55 @@ import PaymentSDK
 public class PayWithUI {
     private static var cdvPlugin : PaymentPlugin?
     private static var currentVc : UIViewController?
-    private static var isSdkVcShownForWallet  = false
+    private static var isSdkVcShownUsingWindow  = false
     private static var window : UIWindow?
     
     
+    class func payWithCardOrWallet(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
+                           theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
+        PayWithUI.cdvPlugin = cdvPlugin
+        
+        let payWithCardOrWallet = Pay(clientId: cdvPlugin.clientId, clientSecret: cdvPlugin.clientSecret,
+                                      customerId: theCustomerId, description: theDescription, amount:theAmount, currency:theCurrency)
+        
+        let vc = payWithCardOrWallet.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
+            guard error == nil else {
+                let errMsg = (error?.localizedDescription)!
+                
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
+                window?.rootViewController = cdvPlugin.viewController!
+                window?.makeKeyAndVisible()
+                return
+            }
+            guard let response = purchaseResponse else {
+                let failureMsg = (error?.localizedFailureReason)!
+                
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
+                window?.rootViewController = cdvPlugin.viewController!
+                window?.makeKeyAndVisible()
+                return
+            }
+            
+            //Handling success
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
+            window?.rootViewController = cdvPlugin.viewController!
+            window?.makeKeyAndVisible()
+        })
+        
+        let navController = UINavigationController(rootViewController: vc)
+        //addBackNavigationMenuItem(vc)
+        
+        if(window == nil) {
+            if let app = UIApplication.sharedApplication().delegate as? CDVAppDelegate, let keyWindow = app.window {
+                window = keyWindow
+            }
+        }
+        window!.rootViewController = navController
+        window!.makeKeyAndVisible()
+        currentVc = navController
+        isSdkVcShownUsingWindow = true
+    }
+
     class func payWithCard(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
                            theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
@@ -50,7 +95,7 @@ public class PayWithUI {
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
-        isSdkVcShownForWallet = false
+        isSdkVcShownUsingWindow = false
     }
     
     class func payWithWallet(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
@@ -99,7 +144,7 @@ public class PayWithUI {
         window!.makeKeyAndVisible()
         
         currentVc = navController
-        isSdkVcShownForWallet = true
+        isSdkVcShownUsingWindow = true
     }
     
     class func payWithToken(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
@@ -140,7 +185,7 @@ public class PayWithUI {
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
-        isSdkVcShownForWallet = false
+        isSdkVcShownUsingWindow = false
     }
     
     class func validatePaymentCard(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String) {
@@ -177,7 +222,7 @@ public class PayWithUI {
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
-        isSdkVcShownForWallet = false
+        isSdkVcShownUsingWindow = false
     }
     
     
@@ -187,13 +232,13 @@ public class PayWithUI {
     
     class func addBackNavigationMenuItem(currentlyDisplayedVc: UIViewController) {
         let leftButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(PayWithUI.backAction))
-
+        
         //currentlyDisplayedVc.navigationItem.title = "Pay"
         currentlyDisplayedVc.navigationItem.leftBarButtonItem = leftButton
     }
     
     @objc class func backAction() {
-        if(isSdkVcShownForWallet) {
+        if(isSdkVcShownUsingWindow) {
             window?.rootViewController = cdvPlugin?.viewController!
             window?.makeKeyAndVisible()
         } else {
