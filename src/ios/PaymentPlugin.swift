@@ -27,19 +27,14 @@ import SwiftyJSON
         if theClientId.length > 0 && theClientSecret.length > 0 {
             self.clientId = theClientId
             self.clientSecret = theClientSecret
-            
-            let successMsg = "Initialization was successfull"
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
-        } else {
-            let errMsg = "Intialization was not successful. Arguments passed to 'Init' should all be strings."
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-            self.commandDelegate!.sendPluginResult(pluginResult, callbackId: command.callbackId)
         }
     }
     
-    func PayWithCard(command: CDVInvokedUrlCommand) {
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    
+    //---------- With SDK UI
+    
+    func Pay(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
         let amountAsString = Utils.getStringFromDict(firstArg!, theKey: "amount")
@@ -47,12 +42,25 @@ import SwiftyJSON
         let theCurrency = firstArg?["currency"] as? String
         let theDescription = firstArg?["description"] as? String
         
-        PayWithUI.payWithCard(self, cdvCommand: command, theCustomerId: customerIdAsString, theCurrency: theCurrency!,
+        PayWithUI.payWithCardOrWallet(self, command: cdvCommand, theCustomerId: customerIdAsString, theCurrency: theCurrency!,
+                                      theDescription: theDescription!, theAmount: amountAsString)
+    }
+    
+    func PayWithCard(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
+        
+        let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
+        let amountAsString = Utils.getStringFromDict(firstArg!, theKey: "amount")
+        //--
+        let theCurrency = firstArg?["currency"] as? String
+        let theDescription = firstArg?["description"] as? String
+        
+        PayWithUI.payWithCard(self, command: cdvCommand, theCustomerId: customerIdAsString, theCurrency: theCurrency!,
                               theDescription: theDescription!, theAmount: amountAsString)
     }
     
-    func PayWithWallet(command: CDVInvokedUrlCommand) {
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    func PayWithWallet(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
         let amountAsString = Utils.getStringFromDict(firstArg!, theKey: "amount")
@@ -60,12 +68,12 @@ import SwiftyJSON
         let theCurrency = firstArg?["currency"] as? String
         let theDescription = firstArg?["description"] as? String
         
-        PayWithUI.payWithWallet(self, cdvCommand: command, theCustomerId: customerIdAsString, theCurrency: theCurrency!,
+        PayWithUI.payWithWallet(self, command: cdvCommand, theCustomerId: customerIdAsString, theCurrency: theCurrency!,
                                 theDescription: theDescription!, theAmount: amountAsString)
     }
     
-    func PayWithToken(command: CDVInvokedUrlCommand){
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    func PayWithToken(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
         let amountAsString = Utils.getStringFromDict(firstArg!, theKey: "amount")
@@ -77,25 +85,25 @@ import SwiftyJSON
         let theDescription = firstArg?["description"] as? String
         let theCardType = firstArg?["cardtype"] as? String
         
-        PayWithUI.payWithToken(self, cdvCommand: command, theCustomerId: customerIdAsString, paymentDescription: theDescription!,
+        PayWithUI.payWithToken(self, command: cdvCommand, theCustomerId: customerIdAsString, paymentDescription: theDescription!,
                                theToken: tokenAsString, theAmount: amountAsString, theCurrency:theCurrency!,
                                theExpiryDate: expiryDateAsString, theCardType: theCardType!, thePanLast4Digits: panLast4DigitsAsString)
     }
     
-    func ValidatePaymentCard(command: CDVInvokedUrlCommand) {
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    func ValidatePaymentCard(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerIdAsString = Utils.getStringFromDict(firstArg!, theKey: "customerId")
         
-        PayWithUI.validatePaymentCard(self, cdvCommand: command, theCustomerId: customerIdAsString)
+        PayWithUI.validatePaymentCard(self, command: cdvCommand, theCustomerId: customerIdAsString)
     }
     
     
     //---------- Without SDK UI
     
     
-    func MakePayment(command: CDVInvokedUrlCommand) {
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    func MakePayment(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
         let pan = Utils.getStringFromDict(firstArg!, theKey: "pan")
@@ -106,16 +114,16 @@ import SwiftyJSON
         //--
         let currency = firstArg?["currency"] as? String
         
-        PayWithoutUI.makePayment(self, cdvCommand: command, thePan: pan, theAmount: amount, theCvv: cvv,
+        PayWithoutUI.makePayment(self, command: cdvCommand, thePan: pan, theAmount: amount, theCvv: cvv,
                                  thePin: pin, theExpiryDate: expiryDate, theCustomerId: customerId, theCurrency: currency!)
     }
     
-    func LoadWallet(command: CDVInvokedUrlCommand) {
-        PayWithoutUI.loadWallet(self, cdvCommand: command)
+    func LoadWallet(cdvCommand: CDVInvokedUrlCommand) {
+        PayWithoutUI.loadWallet(self, command: cdvCommand)
     }
     
-    func PayWithWalletSDK(command: CDVInvokedUrlCommand) {
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    func PayWithWalletSDK(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
         let theTokenOfPaymentMethod = Utils.getStringFromDict(firstArg!, theKey: "pan")
@@ -124,22 +132,22 @@ import SwiftyJSON
         let pin = Utils.getStringFromDict(firstArg!, theKey: "pin")
         let currency = Utils.getStringFromDict(firstArg!, theKey: "currency")
         
-        PayWithoutUI.payWithWallet(self, cdvCommand: command, theCustomerId: customerId, theAmount: amount,
+        PayWithoutUI.payWithWallet(self, command: cdvCommand, theCustomerId: customerId, theAmount: amount,
                                    tokenOfUserSelectedPaymentMethod: theTokenOfPaymentMethod, thePin: pin,
                                    theCurrency: currency, theRequestorId: requestorId)
     }
     
-    func PaymentStatus(command: CDVInvokedUrlCommand) {
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    func PaymentStatus(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let transactionRef = Utils.getStringFromDict(firstArg!, theKey: "transactionRef")
         let amount = Utils.getStringFromDict(firstArg!, theKey: "amount")
         
-        PayWithoutUI.paymentStatus(self, cdvCommand: command, theTransactionRef: transactionRef, theAmount: amount)
+        PayWithoutUI.paymentStatus(self, command: cdvCommand, theTransactionRef: transactionRef, theAmount: amount)
     }
     
-    func ValidateCard(command: CDVInvokedUrlCommand) {
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    func ValidateCard(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let customerId = Utils.getStringFromDict(firstArg!, theKey: "customerId")
         let pan = Utils.getStringFromDict(firstArg!, theKey: "pan")
@@ -147,18 +155,18 @@ import SwiftyJSON
         let pin = Utils.getStringFromDict(firstArg!, theKey: "pin")
         let expiryDate = Utils.getStringFromDict(firstArg!, theKey: "expiryDate")
         
-        PayWithoutUI.validateCard(self, cdvCommand: command, thePan: pan, theCvv: cvv,
+        PayWithoutUI.validateCard(self, command: cdvCommand, thePan: pan, theCvv: cvv,
                                   thePin: pin, theExpiryDate: expiryDate, theCustomerId: customerId)
     }
     
-    func AuthorizeOTP(command: CDVInvokedUrlCommand) {
-        let firstArg = command.arguments[0] as? [String:AnyObject]
+    func AuthorizeOTP(cdvCommand: CDVInvokedUrlCommand) {
+        let firstArg = cdvCommand.arguments[0] as? [String:AnyObject]
         
         let otp = Utils.getStringFromDict(firstArg!, theKey: "otp")
         let otpTransId = Utils.getStringFromDict(firstArg!, theKey: "otpTransactionIdentifier")
         let otpTransRef = Utils.getStringFromDict(firstArg!, theKey: "transactionRef")
         
-        PayWithoutUI.authorizeOtp(self, cdvCommand: command, theOtp: otp, theOtpTransactionId: otpTransId,
+        PayWithoutUI.authorizeOtp(self, command: cdvCommand, theOtp: otp, theOtpTransactionId: otpTransId,
                                   theOtpTransactionRef: otpTransRef)
     }
 }

@@ -9,11 +9,56 @@ import PaymentSDK
 public class PayWithUI {
     private static var cdvPlugin : PaymentPlugin?
     private static var currentVc : UIViewController?
-    private static var isSdkVcShownForWallet  = false
+    private static var isSdkVcShownUsingWindow  = false
     private static var window : UIWindow?
     
     
-    class func payWithCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
+    class func payWithCardOrWallet(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
+                           theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
+        PayWithUI.cdvPlugin = cdvPlugin
+        
+        let payWithCardOrWallet = Pay(clientId: cdvPlugin.clientId, clientSecret: cdvPlugin.clientSecret,
+                                      customerId: theCustomerId, description: theDescription, amount:theAmount, currency:theCurrency)
+        
+        let vc = payWithCardOrWallet.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
+            guard error == nil else {
+                let errMsg = (error?.localizedDescription)!
+                
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
+                window?.rootViewController = cdvPlugin.viewController!
+                window?.makeKeyAndVisible()
+                return
+            }
+            guard let response = purchaseResponse else {
+                let failureMsg = (error?.localizedFailureReason)!
+                
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
+                window?.rootViewController = cdvPlugin.viewController!
+                window?.makeKeyAndVisible()
+                return
+            }
+            
+            //Handling success
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
+            window?.rootViewController = cdvPlugin.viewController!
+            window?.makeKeyAndVisible()
+        })
+        
+        let navController = UINavigationController(rootViewController: vc)
+        //addBackNavigationMenuItem(vc)
+        
+        if(window == nil) {
+            if let app = UIApplication.sharedApplication().delegate as? CDVAppDelegate, let keyWindow = app.window {
+                window = keyWindow
+            }
+        }
+        window!.rootViewController = navController
+        window!.makeKeyAndVisible()
+        currentVc = navController
+        isSdkVcShownUsingWindow = true
+    }
+
+    class func payWithCard(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
                            theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
@@ -25,23 +70,20 @@ public class PayWithUI {
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             guard let response = purchaseResponse else {
                 let failureMsg = (error?.localizedFailureReason)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
@@ -49,14 +91,14 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        //addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(vc)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
-        isSdkVcShownForWallet = false
+        isSdkVcShownUsingWindow = false
     }
     
-    class func payWithWallet(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand,
+    class func payWithWallet(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
                              theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
@@ -67,8 +109,7 @@ public class PayWithUI {
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
                 window?.rootViewController = cdvPlugin.viewController!
                 window?.makeKeyAndVisible()
                 return
@@ -77,15 +118,13 @@ public class PayWithUI {
             guard let response = purchaseResponse else {
                 let failureMsg = (error?.localizedFailureReason)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 window?.rootViewController = cdvPlugin.viewController!
                 window?.makeKeyAndVisible()
                 return
             }
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
             window?.rootViewController = cdvPlugin.viewController!
             window?.makeKeyAndVisible()
         })
@@ -94,7 +133,7 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        //addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(vc)
         
         if(window == nil) {
             if let app = UIApplication.sharedApplication().delegate as? CDVAppDelegate, let keyWindow = app.window {
@@ -105,10 +144,10 @@ public class PayWithUI {
         window!.makeKeyAndVisible()
         
         currentVc = navController
-        isSdkVcShownForWallet = true
+        isSdkVcShownUsingWindow = true
     }
     
-    class func payWithToken(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
+    class func payWithToken(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
                             theToken:String, theAmount:String, theCurrency:String, theExpiryDate:String, theCardType:String, thePanLast4Digits:String){
         PayWithUI.cdvPlugin = cdvPlugin
         
@@ -120,23 +159,21 @@ public class PayWithUI {
         let vc = payWithToken.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             guard let response = purchaseResponse else {
                 let failureMsg = (error?.localizedFailureReason)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
@@ -144,14 +181,14 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        //addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(vc)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
-        isSdkVcShownForWallet = false
+        isSdkVcShownUsingWindow = false
     }
     
-    class func validatePaymentCard(cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, theCustomerId: String) {
+    class func validatePaymentCard(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
         let validateCard = ValidateCard(clientId: cdvPlugin.clientId, clientSecret: cdvPlugin.clientSecret, customerId: theCustomerId)
@@ -160,8 +197,7 @@ public class PayWithUI {
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
@@ -169,14 +205,12 @@ public class PayWithUI {
             guard let response = validateCardResponse else {
                 let failureMsg = (error?.localizedFailureReason)!
                 
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: failureMsg)
-                cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+                Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
                 return
             }
             //Handling success
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+            Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
             cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
         })
         
@@ -184,11 +218,11 @@ public class PayWithUI {
         vc.view.addGestureRecognizer(screenTap)
         
         let navController = UINavigationController(rootViewController: vc)
-        //addBackNavigationMenuItem(navController)
+        //addBackNavigationMenuItem(vc)
         
         cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
         currentVc = navController
-        isSdkVcShownForWallet = false
+        isSdkVcShownUsingWindow = false
     }
     
     
@@ -196,25 +230,15 @@ public class PayWithUI {
         currentVc!.view.endEditing(true)
     }
     
-    class func addBackNavigationMenuItem(sdkVc: UIViewController) {
-        let view : UIView = sdkVc.view
-        
-        let navigationBar = UINavigationBar(frame: CGRect(x: 5, y:25, width: (sdkVc.view.frame.size.width), height: 44))
-        navigationBar.backgroundColor = UIColor.whiteColor()
-        
-        let navigationItem = UINavigationItem()
-        //navigationItem.title = "Pay"
-        
+    class func addBackNavigationMenuItem(currentlyDisplayedVc: UIViewController) {
         let leftButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(PayWithUI.backAction))
         
-        navigationItem.leftBarButtonItem = leftButton
-        navigationBar.items = [navigationItem]
-        
-        view.addSubview(navigationBar)
+        //currentlyDisplayedVc.navigationItem.title = "Pay"
+        currentlyDisplayedVc.navigationItem.leftBarButtonItem = leftButton
     }
     
     @objc class func backAction() {
-        if(isSdkVcShownForWallet) {
+        if(isSdkVcShownUsingWindow) {
             window?.rootViewController = cdvPlugin?.viewController!
             window?.makeKeyAndVisible()
         } else {
