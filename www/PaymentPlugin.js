@@ -1,7 +1,7 @@
 var exec = require('cordova/exec');
   
 function paymentAction (action) {
-  return function (args, successCallback, failCallback) {
+  return function (arg, successCallback, failCallback) {
     var argsArray =  (Array.isArray(arg)) ? arg : [arg];
     
     if(successCallback) {
