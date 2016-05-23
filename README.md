@@ -376,7 +376,7 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 
 ```javascript
     var validateCardSuccess = function(response) {
-        var validateCardResponse = JSON.parse(response);
+        var validateCardResponse = JSON.parse(response);  // transaction success reponse
         // The response object contains fields transactionIdentifier, transactionRef,
         // message, balance, token, tokenExpiryDate, panLast4Digits and cardType. 
 
@@ -393,7 +393,7 @@ During development of your app, you should use the Plugin in sandbox mode to ena
     }
          
     var validateCardFail = function(response) {
-        alert(response);
+        alert(response);// transaction failure reponse
     }
 
     PaymentPlugin.validateCard(validateCardRequest, validateCardSuccess, validateCardFail);
