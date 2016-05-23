@@ -11,10 +11,7 @@
     <js-module name="PaymentPlugin" src="www/PaymentPlugin.js">
         <clobbers target="PaymentPlugin" />
     </js-module>
-    <js-module name="jquery" src="www/jquery.js">
-        <clobbers target="jquery" />
-    </js-module>
-
+    
     <!-- android -->
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
@@ -39,6 +36,7 @@
         <resource-file src="libs/gson-2.3.1.jar" target="libs/gson-2.3.1.jar" />
         <resource-file src="libs/payment.jar" target="libs/payment.jar" />
     </platform>
+
 
     <platform name='ios'>
         <config-file target='config.xml' parent='/*'>
