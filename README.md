@@ -114,19 +114,13 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 * In your code, override the api base as follows
 ```javascript
     function init(){
-    	var userDetails = {
-    	    clientId :"IKIAF8F70479A6902D4BFF4E443EBF15D1D6CB19E232",
-    	    clientSecret : "ugsmiXPXOOvks9MR7+IFHSQSdk8ZzvwQMGvd0GJva30=",
-    	    paymentApi : "https://sandbox.interswitchng.com",
-    	    passportApi : "https://sandbox.interswitchng.com/passport"
-    	}
-    	var initial = PaymentPlugin.init(userDetails);				 
-    	initial.done(function(response){    			
-    	    alert(response); // success response if the initialization was successful
-    	});
-    	initial.fail(function (response) {    			
-    		alert(response); // error response if the initialization failed
-    	});
+        var userDetails = {
+            clientId: "IKIAF8F70479A6902D4BFF4E443EBF15D1D6CB19E232",
+            clientSecret: "ugsmiXPXOOvks9MR7+IFHSQSdk8ZzvwQMGvd0GJva30=",
+            paymentApi : "https://sandbox.interswitchng.com",
+            passportApi : "https://sandbox.interswitchng.com/passport"
+        };
+        var initial = PaymentPlugin.init(userDetails);
     }
 ```
 
@@ -152,13 +146,14 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 ```
 2. Create a button to make payment and use this code in the onclick event of the button
 ```javascript
-    var pay = PaymentPlugin.pay(payRequest);
-    pay.done(function(response){
-        alert(response); // transaction success reponse
-    });
-    pay.fail(function (response) {           
+    var paySuccess = function(response) {
+        var purchaseResponse = JSON.parse(response); // transaction success reponse
+        alert(purchaseResponse.message); 
+    }
+    var payFail = function(response) {
         alert(response); // transaction failure reponse
-    });
+    }
+    PaymentPlugin.pay(payRequest, paySuccess, payFail);
 ```
 
 ### <a name='PayWithCard'>Pay with Card
@@ -176,13 +171,15 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 ```
 * In the onclick event of the Pay button, use this code.
 ```javascript
-    var payWithCard = PaymentPlugin.payWithCard(payWithCardRequest);
-    payWithCard.done(function(response){
-        alert(response); // transaction success reponse
-    });
-    payWithCard.fail(function (response) {        
-        alert(response); // transaction failure reponse
-    });
+  var payWithCardSuccess = function(response) {
+    var purchaseResponse = JSON.parse(response); // transaction success reponse
+    alert(purchaseResponse.message);
+  }
+  var payWithCardFail = function(response) {
+    alert(response); // transaction failure reponse
+  }
+
+  PaymentPlugin.payWithCard(payWithCardRequest, payWithCardSuccess, payWithCardFail);
 ```
 
 ### <a name='PayWithWallet'>Pay With Wallet
@@ -200,13 +197,15 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 ```
 * In the onclick event of the Pay button, use this code.
 ```javascript
-    var payWithWallet = PaymentPlugin.payWithWallet(payWithWalletRequest);				 
-    payWithWallet.done(function(response){				 
-        alert(response); // transaction success reponse
-    });
-    payWithWallet.fail(function (response) {        			
+    var payWithWalletSuccess = function(response) {
+        var purchaseResponse = JSON.parse(response); // transaction success reponse
+        alert(purchaseResponse.message); 
+    }
+    var payWithWalletFail = function(response) {
         alert(response); // transaction failure reponse
-    });
+    }
+
+    PaymentPlugin.payWithWallet(payWithWalletRequest, payWithWalletSuccess, payWithWalletFail);
 ```
 
 ### <a name='ValidateCard'></a>Validate Card
@@ -220,13 +219,21 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 ```
 * To call validate card, use this code.
 ```javascript
-    var validateCard = PaymentPlugin.validatePaymentCard(validateCardRequest);
-    validateCard.done(function(response){         
-        alert(response); // transaction success reponse
-    });
-    validateCard.fail(function (response) {        
-        alert(response); // transaction failure reponse
-    });
+  var validatePaymentCardSuccess = function(response) {
+    var validateCardSuccess = JSON.parse(resposne);
+    var token = validateCardResponse.token;
+    var tokenExpiryDate = validateCardResponse.tokenExpiryDate;
+    var balance = validateCardResponse.balance;
+    var panLast4Digits = validateCardResponse.panLast4Digits;
+    var cardType = validateCardResponse.cardType;
+ 
+    alert("Validating your card was successful");
+  }
+
+  var validatePaymentCardFail = function(response) {
+    alert(response); // transaction failure reponse
+  }
+  PaymentPlugin.validatePaymentCard(validateCardRequest, validatePaymentCardSuccess, validatePaymentCardFail);
 ```
 
 ### <a name='PayWithToken'></a> Pay with Token
@@ -248,13 +255,15 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 ```
 * In the onclick event of the Pay button, use this code.
 ```javascript
-    var payment =PaymentPlugin.payWithToken(payWithTokenRequest);	
-	payment.done(function(response){
-		alert(response); // transaction success reponse
-	});
-	payment.fail(function (response) {		
-		alert(response); // transaction failure reponse
-	});
+  var payWithTokenSuccess = function(response) {
+    var purchaseResponse = JSON.parse(response); // transaction success reponse
+    alert(purchaseResponse.message);
+  }
+  var payWithTokenFail = function(response) {
+    alert(response); // transaction failure reponse
+  }
+
+  PaymentPlugin.payWithToken(payWithTokenRequest, payWithTokenSuccess, payWithTokenFail);    
 ```
 
 ## <a name='SDKWithOutUI'></a>Using the Plugin without UI (In PCI-DSS Scope: Yes)
@@ -279,16 +288,16 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 ```
 
 
-```javascript    
-    var payment = PaymentPlugin.makePayment(purchaseRequest);
-    payment.done(function(response){    
-    var obj = JSON.parse(response);
-        //the response object here contains amount, message, transactionIdentifier and transactionRef			        
-        alert(response);				
-    });
-    payment.fail(function (response) {			              
-        alert(response); // transaction failure reponse
-    });
+```javascript
+    var makePaymentSuccess = function(response) {
+        var responseObject = JSON.parse(response);
+        //the response object here contains amount, message, transactionIdentifier and transactionRef       
+        alert(responseObject.message);
+    }
+    var makePaymentFail = function(response) {
+        alert(response);
+    }    
+    PaymentPlugin.makePayment(purchaseRequest, makePaymentSuccess, makePaymentFail);
 ```
 
 ### <a name='PayWithWalletNoUI'></a>Pay with Wallet
