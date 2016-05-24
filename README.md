@@ -220,7 +220,7 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 * To call validate card, use this code.
 ```javascript
   var validatePaymentCardSuccess = function(response) {
-    var validateCardSuccess = JSON.parse(resposne);
+    var validateCardResponse = JSON.parse(resposne);
     var token = validateCardResponse.token;
     var tokenExpiryDate = validateCardResponse.tokenExpiryDate;
     var balance = validateCardResponse.balance;
