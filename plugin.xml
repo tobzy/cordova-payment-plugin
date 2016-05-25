@@ -11,9 +11,7 @@
     <js-module name="PaymentPlugin" src="www/PaymentPlugin.js">
         <clobbers target="PaymentPlugin" />
     </js-module>
-    <js-module name="jquery" src="www/jquery.js">
-        <clobbers target="jquery" />
-    </js-module>
+    
     <!-- android -->
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
