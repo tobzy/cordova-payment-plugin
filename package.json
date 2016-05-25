@@ -24,9 +24,7 @@
     "ecosystem:cordova",
     "cordova-android",
     "cordova-ios",
-     
     "interswitch",
-     
     "payment"
   ],
   "scripts": {
