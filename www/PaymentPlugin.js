@@ -1,68 +1,33 @@
 var exec = require('cordova/exec');
-function PaymentPlugin() {
- //console.log('Payment plugin working');
-}
-PaymentPlugin.prototype.makePayment = function(args){
-   return execPromise("MakePayment",args);
-}
-
-function execPromise(action, args){
-    if (!Array.isArray(args)) {
-		args = [args];
-	}
-    var defer = new $.Deferred();
-     exec(function success(successMessage){
-              defer.resolve(successMessage);
-    },
-    function error(errorMessage){
-        defer.reject(errorMessage);
-    },
-    "PaymentPlugin",
-    action,
-    args);
-    return defer.promise();
-}
-PaymentPlugin.prototype.init = function(args){
-      return execPromise("Init",args);
- }
- PaymentPlugin.prototype.authorizeOtp = function(args){
-       return execPromise("AuthorizeOTP",args);
- }
-PaymentPlugin.prototype.loadWallet  = function(){
-    return execPromise("LoadWallet");
-}
-PaymentPlugin.prototype.payWithWallet  = function(args){
-    return execPromise("PayWithWallet",args);
-}
-PaymentPlugin.prototype.payWithWalletSDK  = function(args){
-    return execPromise("PayWithWalletSDK",args);
+  
+function paymentAction (action) {
+  return function (arg, successCallback, failCallback) {
+    var argsArray =  (Array.isArray(arg)) ? arg : [arg];
+    
+    if(successCallback) {
+      exec(successCallback, failCallback, "PaymentPlugin", action, argsArray);
+    } else {
+      exec(function(response) {}, failCallback, "PaymentPlugin", action, argsArray);
+    }
+  }
 }
 
-PaymentPlugin.prototype.paymentStatus  = function(args){
-    return execPromise("PaymentStatus",args);
-}
+var PaymentPlugin = {};
+PaymentPlugin.init = paymentAction("Init");
 
-PaymentPlugin.prototype.payWithToken  = function(args){
-    return execPromise("PayWithToken",args);
-}
+// Using Payment SDK UI
+PaymentPlugin.pay = paymentAction("Pay");
+PaymentPlugin.payWithCard = paymentAction("PayWithCard");
+PaymentPlugin.payWithWallet = paymentAction("PayWithWallet");
+PaymentPlugin.payWithToken = paymentAction("PayWithToken");
+PaymentPlugin.validatePaymentCard = paymentAction("ValidatePaymentCard");
 
-PaymentPlugin.prototype.validatePaymentCard  = function(args){
-    return execPromise("ValidatePaymentCard",args);
-}
-PaymentPlugin.prototype.userInformation = function(args){
-    return execPromise("UserInformation",args);
-}
+// Without using Payment SDK UI
+PaymentPlugin.makePayment = paymentAction("MakePayment");
+PaymentPlugin.loadWallet = paymentAction("LoadWallet");
+PaymentPlugin.payWithWalletSDK = paymentAction("PayWithWalletSDK");
+PaymentPlugin.validateCard = paymentAction("ValidateCard");
+PaymentPlugin.authorizeOtp = paymentAction("AuthorizeOTP");
+PaymentPlugin.paymentStatus = paymentAction("PaymentStatus");
 
-PaymentPlugin.prototype.validateCard  = function(args){
-    return execPromise("ValidateCard",args);
-}
-
-PaymentPlugin.prototype.pay = function(args){
-    return execPromise("Pay",args);
-}
-
-PaymentPlugin.prototype.payWithCard = function(args){
-      return execPromise("PayWithCard",args);
- }
-var paymentPlugin = new PaymentPlugin();
-module.exports = new PaymentPlugin();
+module.exports = PaymentPlugin;
