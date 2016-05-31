@@ -130,7 +130,7 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 
 ## <a name='SDKWithUI'></a>Using the Plugin with UI (In PCI-DSS Scope: No )
 
-### <a name='Pay'>Pay with Card/Wallet
+### <a name='Pay'></a>Pay with Card/Wallet
 
 * To allow for Payment with Card or Wallet
 * Create a Pay button
@@ -156,7 +156,7 @@ During development of your app, you should use the Plugin in sandbox mode to ena
     PaymentPlugin.pay(payRequest, paySuccess, payFail);
 ```
 
-### <a name='PayWithCard'>Pay with Card
+### <a name='PayWithCard'></a>Pay with Card
 
 * To allow for Payment with Card only
 * Create a Pay button and set the payment request
@@ -182,7 +182,7 @@ During development of your app, you should use the Plugin in sandbox mode to ena
   PaymentPlugin.payWithCard(payWithCardRequest, payWithCardSuccess, payWithCardFail);
 ```
 
-### <a name='PayWithWallet'>Pay With Wallet
+### <a name='PayWithWallet'></a>Pay With Wallet
 
 * To allow for Payment with Wallet only
 * Create a Pay button and set the payment request
