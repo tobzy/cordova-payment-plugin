@@ -202,7 +202,7 @@ public class PayWithOutUI extends CordovaPlugin{
                 try{
                     options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
                     JSONObject params = args.getJSONObject(0);
-                    ValidateCardRequest request = new ValidateCardRequest(); // Setup request parameters
+                    final ValidateCardRequest request = new ValidateCardRequest(); // Setup request parameters
                     request.setPan(params.getString("pan")); //Card No or Token
                     request.setPinData(params.getString("pin")); // Optional Card PIN for card payment
                     request.setCvv2(params.getString("cvv"));
@@ -220,16 +220,22 @@ public class PayWithOutUI extends CordovaPlugin{
 
                         @Override
                         public void onSuccess(ValidateCardResponse response) {
-                            // Check if OTP is required.
                             response.setCardType(type);
-                            try {
-                                if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
-                                    PluginUtils.getPluginResult(callbackContext, response);
-                                } else {
-                                    PluginUtils.getPluginResult(callbackContext, response);
+                            if (StringUtils.hasText(response.getResponseCode())) {
+                                if (PaymentSDK.SAFE_TOKEN_RESPONSE_CODE.equals(response.getResponseCode())){
+                                    PluginResult result = null;
+                                    result = new PluginResult(PluginResult.Status.OK, getJsonObject(response,request));
+                                    result.setKeepCallback(true);
+                                    callbackContext.sendPluginResult(result);
                                 }
-                            } catch (Exception ex) {
-                                callbackContext.error(ex.getMessage());
+                                else if(PaymentSDK.CARDINAL_RESPONSE_CODE.equals(response.getResponseCode())){
+                                    /*PluginResult result = null;
+                                    result = new PluginResult(PluginResult.Status.OK, getJsonObject(response,request));
+                                    result.setKeepCallback(true);
+                                    callbackContext.sendPluginResult(result);*/
+                                }
+                            } else {
+                                PluginUtils.getPluginResult(callbackContext, response);
                             }
                         }
                     });
@@ -276,7 +282,7 @@ public class PayWithOutUI extends CordovaPlugin{
                     options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
                     JSONObject params = args.getJSONObject(0);
                     AuthorizeCardRequest request = new AuthorizeCardRequest();
-                    request.setPaymentId(params.getString("paymentId")); // Set the unique transaction reference.
+                    request.setTransactionRef(params.getString("transactionRef"));
                     request.setAuthData(params.getString("authData")); // Set the OTP identifier for the request
                     request.setOtp(params.getString("otp")); // Accept OTP from user
                     new PaymentSDK(context, options).authorizeCard(request, new IswCallback<AuthorizeCardResponse>() {
