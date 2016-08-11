@@ -1,5 +1,14 @@
 import android.app.Activity;
 import android.content.Context;
+import android.webkit.WebView;
+import android.app.Dialog;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.Display;
+import android.view.LayoutInflater;
+import android.graphics.Point;
 
 import com.interswitchng.sdk.model.RequestOptions;
 import com.interswitchng.sdk.payment.IswCallback;
@@ -21,6 +30,7 @@ import com.interswitchng.sdk.payment.model.AuthorizePurchaseRequest;
 import com.interswitchng.sdk.payment.model.AuthorizePurchaseResponse;
 import com.interswitchng.sdk.payment.model.AuthorizeCardRequest;
 import com.interswitchng.sdk.payment.model.AuthorizeCardResponse;
+import com.interswitchng.sdk.payment.android.AuthorizeWebView;
 
 import com.interswitchng.sdk.util.RandomString;
 import com.interswitchng.sdk.util.StringUtils;
@@ -41,6 +51,7 @@ public class PayWithOutUI extends CordovaPlugin{
     private WalletSDK sdk;
     private Activity activity;
     private Context context;
+    protected WebView webView;
 
     private static RequestOptions options;
     public PayWithOutUI(Activity activity, String clientId, String clientSecret ){
@@ -87,18 +98,73 @@ public class PayWithOutUI extends CordovaPlugin{
                                     callbackContext.sendPluginResult(result);
                                 }
                                 else if(PaymentSDK.CARDINAL_RESPONSE_CODE.equals(response.getResponseCode())){
-                                    /*PluginResult result = null;
-                                    result = new PluginResult(PluginResult.Status.OK, getJsonObject(response,request));
-                                    result.setKeepCallback(true);
-                                    callbackContext.sendPluginResult(result);*/
+                                    handleCardinal(response);
                                 }
                             } else {
                                 PluginUtils.getPluginResult(callbackContext, response);
                             }
                         }
+                        private void handleCardinal(final PurchaseResponse response) {
+                            final Context context = activity;
+                            final Dialog cardinalDialog;
+                            cardinalDialog = new Dialog(activity) {
+                                @Override
+                                public void onBackPressed() {
+                                    super.onBackPressed();
+                                    PluginUtils.getPluginResult(callbackContext, new RuntimeException("User cancelled operation"));
+                                }
+                            };
+                            webView = new AuthorizeWebView(context, response) {
+                                public void onPageDone() {
+                                    cardinalDialog.dismiss();
+                                    Util.showProgressDialog(context, "Processing...");
+                                    AuthorizePurchaseRequest cardinalRequest = new AuthorizePurchaseRequest();
+                                    cardinalRequest.setAuthData(request.getAuthData());
+                                    cardinalRequest.setPaymentId(response.getPaymentId());
+                                    cardinalRequest.setTransactionId(response.getTransactionId());
+                                    cardinalRequest.setEciFlag(response.getEciFlag());
+                                    new PaymentSDK(context, options).authorizePurchase(cardinalRequest, new IswCallback<AuthorizePurchaseResponse>() {
+                                        @Override
+                                        public void onError(Exception error) {
+                                            Util.hideProgressDialog();
+                                            PluginUtils.getPluginResult(callbackContext, error.getMessage());
+                                        }
+
+                                        @Override
+                                        public void onSuccess(AuthorizePurchaseResponse response) {
+                                            Util.hideProgressDialog();
+                                            PluginUtils.getPluginResult(callbackContext, response);
+                                        }
+                                    });
+                                }
+
+                                public void onPageError(Exception error) {
+                                   // finish();
+                                    Util.hideProgressDialog();
+                                    cardinalDialog.dismiss();
+                                    PluginUtils.getPluginResult(callbackContext,error.getMessage());
+                                    //Util.notify(context, "Error", error.getMessage(), "Close", false);
+                                }
+
+                            };
+                            cardinalDialog.setContentView(webView);
+                            cardinalDialog.show();
+                            cardinalDialog.setCancelable(true);
+                            webView.requestFocus(View.FOCUS_DOWN);
+                            webView.getSettings().setJavaScriptEnabled(true);
+                            webView.setVerticalScrollBarEnabled(true);
+                            WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+                            Display display = wm.getDefaultDisplay();
+                            Point size = new Point();
+                            display.getSize(size);
+                            int width = size.x;
+                            int height = size.y;
+                            Window window = cardinalDialog.getWindow();
+                            window.setLayout(width, height);
+                        }
                     });
                 } catch (Exception ex) {
-                    callbackContext.error(ex.toString());
+                    PluginUtils.getPluginResult(callbackContext,ex.getMessage());
                 }
             }
         });
@@ -229,19 +295,74 @@ public class PayWithOutUI extends CordovaPlugin{
                                     callbackContext.sendPluginResult(result);
                                 }
                                 else if(PaymentSDK.CARDINAL_RESPONSE_CODE.equals(response.getResponseCode())){
-                                    /*PluginResult result = null;
-                                    result = new PluginResult(PluginResult.Status.OK, getJsonObject(response,request));
-                                    result.setKeepCallback(true);
-                                    callbackContext.sendPluginResult(result);*/
+                                    handleCardinal(response);
                                 }
                             } else {
                                 PluginUtils.getPluginResult(callbackContext, response);
                             }
                         }
+                        private void handleCardinal(final ValidateCardResponse response) {
+                            final Context context = activity;
+                            final Dialog cardinalDialog;
+                            cardinalDialog = new Dialog(activity) {
+                                @Override
+                                public void onBackPressed() {
+                                    super.onBackPressed();
+                                    PluginUtils.getPluginResult(callbackContext, new RuntimeException("User cancelled operation"));
+                                }
+                            };
+                            webView = new AuthorizeWebView(context, response) {
+                                public void onPageDone() {
+                                    cardinalDialog.dismiss();
+                                    Util.showProgressDialog(context, "Processing...");
+                                    AuthorizeCardRequest cardinalRequest = new AuthorizeCardRequest();
+                                    cardinalRequest.setAuthData(request.getAuthData());
+                                    cardinalRequest.setTransactionRef(response.getTransactionRef());
+                                    cardinalRequest.setTransactionId(response.getTransactionId());
+                                    cardinalRequest.setEciFlag(response.getEciFlag());
+                                    new PaymentSDK(context, options).authorizeCard(cardinalRequest, new IswCallback<AuthorizeCardResponse>() {
+                                        @Override
+                                        public void onError(Exception error) {
+                                            Util.hideProgressDialog();
+                                            PluginUtils.getPluginResult(callbackContext, error.getMessage());
+                                        }
+
+                                        @Override
+                                        public void onSuccess(AuthorizeCardResponse response) {
+                                            Util.hideProgressDialog();
+                                            PluginUtils.getPluginResult(callbackContext, response);
+                                        }
+                                    });
+                                }
+
+                                public void onPageError(Exception error) {
+                                    // finish();
+                                    Util.hideProgressDialog();
+                                    cardinalDialog.dismiss();
+                                    PluginUtils.getPluginResult(callbackContext, error.getMessage());
+                                    //Util.notify(context, "Error", error.getMessage(), "Close", false);
+                                }
+
+                            };
+                            cardinalDialog.setContentView(webView);
+                            cardinalDialog.show();
+                            cardinalDialog.setCancelable(true);
+                            webView.requestFocus(View.FOCUS_DOWN);
+                            webView.getSettings().setJavaScriptEnabled(true);
+                            webView.setVerticalScrollBarEnabled(true);
+                            WindowManager wm = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
+                            Display display = wm.getDefaultDisplay();
+                            Point size = new Point();
+                            display.getSize(size);
+                            int width = size.x;
+                            int height = size.y;
+                            Window window = cardinalDialog.getWindow();
+                            window.setLayout(width, height);
+                        }
                     });
                 }
                 catch (Exception ex){
-                    callbackContext.error(ex.toString());
+                    PluginUtils.getPluginResult(callbackContext, ex.toString());
                 }
             }
         });
