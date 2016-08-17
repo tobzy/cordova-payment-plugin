@@ -419,7 +419,7 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 
 ```javascript
     var validateCardSuccess = function(response) {
-        //var validateCardResponse = JSON.parse(response);  // transaction success reponse
+        //var validateCardResponse = JSON.parse(response);  // transaction success response
         // The response object contains fields transactionIdentifier, transactionRef,
         // message, balance, token, tokenExpiryDate, panLast4Digits and cardType.         
         if(response.responseCode) {
@@ -457,26 +457,32 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 * Create authorize otp button
 * Set up otp request using this code
 
-```javascript
-    var authorizeOtpRequest = {		
-        otp : 123456, // Accept OTP from user
-        otpTransactionIdentifier: "2121324", // Set the OTP identifier for the request
-        transactionRef: "13324444"	// Set the unique transaction reference.	
+```javascript     
+    var authorizeRequest = {
+      otp : results.otpValue,  // Accept OTP from user
+      paymentId: results.paymentId, // Set the OTP identifier for the request
+      transactionRef: results.transactionRef, // Set the unique transaction reference.
+      authData: results.authData // Set request authData.
     }
 ```
 
 * In the onclick event of the authorize otp button, use this code.
 
 ```javascript
-    var authorizeOtpSuccess = function(response) {      
-      var responseObject = JSON.parse(response);              // transaction success reponse
-      var theTransactionRef = responseObject.transactionRef;      
-      alert("Success: Approved by Financial Institution");
+   var authorizeSuccess = function(response) {             
+     var responseObject = JSON.parse(response);
+     var theTransactionRef = responseObject.transactionRef;     
+     alert(theTransactionRef); // transaction success response
+   }
+    var authorizeFail = function(response) {      
+      alert(response);                                // transaction failure response
+    }   
+    if(results.method ==="makePayment"){
+      PaymentPlugin.authorizePurchase(authorizeRequest, authorizeSuccess, authorizeFail);        
     }
-    var authorizeOtpFail = function(response) {      
-      alert("Payment failed");                                // transaction failure reponse
+    else if (results.method ==="validateCard"){
+      PaymentPlugin.authorizeCard(authorizeRequest, authorizeSuccess, authorizeFail);  
     }
-    PaymentPlugin.authorizeOtp(authorizeOtpRequest, authorizeOtpSuccess, authorizeOtpFail);  
 ```
 
 ### <a name='PaymentStatus'></a>Checking Payment Status
