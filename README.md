@@ -309,8 +309,32 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 
 ```javascript
     var makePaymentSuccess = function(response) {
-        var responseObject = JSON.parse(response);
-        //the response object here contains amount, message, transactionIdentifier and transactionRef       
+        var responseObject ={};
+        if(response.responseCode !== undefined){
+          responseObject = response;
+        }else if (response.responseCode === undefined){
+          responseObject = JSON.parse(response);
+        }
+        if(responseObject.responseCode) {
+          if (responseObject.responseCode === "T0") {
+            ons.notification.prompt(responseObject.message).then(
+            function(otp) {
+              responseObject.method = "makePayment";
+              responseObject.otpValue = otp;
+              authorizePurchase(responseObject);
+            }
+          );
+          } 
+        }
+        else { 
+          if(responseObject.detailMessage !== undefined && responseObject.detailMessage !== null ){
+            alert(responseObject.detailMessage);  
+          }else{
+            alert(responseObject);
+          }
+        }       
+        //var responseObject = JSON.parse(response);
+        //the response object here contains amount, message, transactionIdentifier and transactionRef        
         alert(responseObject.message);
     }
     var makePaymentFail = function(response) {
@@ -393,25 +417,6 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 
 * In the onclick event of the Validate/Add Card button, use this code.
 
-```javascript
-    var validateCardSuccess = function(response) {
-        var validateCardResponse = JSON.parse(response);  // transaction success reponse
-        // The response object contains fields transactionIdentifier, transactionRef,
-        // message, balance, token, tokenExpiryDate, panLast4Digits and cardType. 
-        var token = validateCardResponse.token;
-        var tokenExpiryDate = validateCardResponse.tokenExpiryDate;
-        var balance = validateCardResponse.balance;
-        var panLast4Digits = validateCardResponse.panLast4Digits;
-        var cardType = validateCardResponse.cardType;
-        // Save the token, tokenExpiryDate, cardType and panLast4Digits 
-        // in order to pay with the token in the future.
-        alert("Card Validation was successful");
-    } 
-    var validateCardFail = function(response) {
-        alert(response);// transaction failure reponse
-    }
-    PaymentPlugin.validateCard(validateCardRequest, validateCardSuccess, validateCardFail);
-```
 
 ## <a name='AuthorizeOTP'></a>Authorize Transaction With OTP
 
