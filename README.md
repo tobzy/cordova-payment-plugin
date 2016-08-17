@@ -417,6 +417,38 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 
 * In the onclick event of the Validate/Add Card button, use this code.
 
+```javascript
+    var validateCardSuccess = function(response) {
+        //var validateCardResponse = JSON.parse(response);  // transaction success reponse
+        // The response object contains fields transactionIdentifier, transactionRef,
+        // message, balance, token, tokenExpiryDate, panLast4Digits and cardType.         
+        if(response.responseCode) {
+                  if (response.responseCode === "T0") {
+                    ons.notification.prompt(response.message).then(
+                    function(otp) {
+                      response.method = "validateCard";
+                      response.otpValue = otp;
+                      authorizePurchase(response);
+                    }
+                  );
+                  }                 
+                } else {
+                  var responseObject = JSON.parse(response);
+                   if(responseObject.message !== undefined){
+                      alert(responseObject.message);
+                  }else{
+                    alert(response);
+                  }
+                }
+        // Save the token, tokenExpiryDate, cardType and panLast4Digits 
+        // in order to pay with the token in the future.
+        alert("Card Validation was successful");
+    } 
+    var validateCardFail = function(response) {
+        alert(response);// transaction failure response
+    }
+    PaymentPlugin.validateCard(validateCardRequest, validateCardSuccess, validateCardFail);
+```
 
 ## <a name='AuthorizeOTP'></a>Authorize Transaction With OTP
 
