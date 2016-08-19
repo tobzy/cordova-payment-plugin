@@ -1,79 +1,251 @@
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaInterface;
+import android.app.Activity;
+import android.content.Context;
+import android.widget.Button;
 
-import android.util.Log;
-import android.provider.Settings;
+import com.interswitchng.sdk.auth.Passport;
+import com.interswitchng.sdk.model.RequestOptions;
+import com.interswitchng.sdk.model.User;
+import com.interswitchng.sdk.model.UserInfoRequest;
+import com.interswitchng.sdk.payment.IswCallback;
+import com.interswitchng.sdk.payment.Payment;
+import com.interswitchng.sdk.payment.android.PassportSDK;
+import com.interswitchng.sdk.payment.android.inapp.LoginCredentials;
+
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.interswitchng.sdk.auth.Passport;
-import com.interswitchng.sdk.model.RequestOptions;
-import com.interswitchng.sdk.payment.IswCallback;
-import com.interswitchng.sdk.payment.Payment;
-import com.interswitchng.sdk.payment.android.PaymentSDK;
-import com.interswitchng.sdk.payment.android.WalletSDK;
-import com.interswitchng.sdk.payment.android.inapp.Pay;
-import com.interswitchng.sdk.payment.android.inapp.PayWithCard;
-import com.interswitchng.sdk.payment.android.inapp.PayWithWallet;
-import com.interswitchng.sdk.payment.android.util.Util;
-import com.interswitchng.sdk.util.StringUtils;
-import com.interswitchng.sdk.util.RandomString;
-import com.interswitchng.sdk.payment.model.PurchaseResponse;
-import com.interswitchng.sdk.payment.model.PurchaseRequest;
 
-import com.interswitchng.sdk.payment.model.WalletResponse;
-import com.interswitchng.sdk.payment.model.WalletRequest;
-import com.interswitchng.sdk.payment.model.PaymentMethod;
+/**
+ * @author Babajide.Apata
+ * @description Expose the Payment to Cordova JavaScript Applications
+ */
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
+public class PaymentPlugin extends CordovaPlugin  {
+	public PaymentPlugin() {
+    }
+    private String clientId;
+    private String clientSecret;
 
-import java.lang.Exception;
-import java.lang.Override;
-import java.lang.Runnable;
-
-public class PaymentPlugin extends CordovaPlugin {
-	public PaymentPlugin() {}
     private Activity activity;
     private Context context;
     private Button payWithCard;
+    private static RequestOptions options;
+    private IswCallback<LoginCredentials> callback;
+
+
+    //final RequestOptions options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
 		super.initialize(cordova, webView);
-        final RequestOptions options = RequestOptions.builder().setClientId("IKIA14BAEA0842CE16CA7F9FED619D3ED62A54239276").setClientSecret("Z3HnVfCEadBLZ8SYuFvIQG52E472V3BQLh4XDKmgM2A=").build();
+        activity =  cordova.getActivity();
 	}
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
-        if(action.equals("MakePayment")){
+        final PayWithOutUI payWithOutUI = new PayWithOutUI(activity,clientId,clientSecret);
+        final PayWithUI payWithUI = new PayWithUI(activity,clientId,clientSecret);
+        if (action.equals("Init")) {
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        makePayment(action, args, callbackContext); //asyncronous call
+                        init(args, callbackContext);
+                    } catch (Exception ex) {
+                        callbackContext.error(ex.toString());
                     }
-                    catch (JSONException jsonException){
-                        callbackContext.error(jsonException.toString());
+                }
+            });
+            return true;
+        }
+        else if(action.equals("AuthorizePurchase")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithOutUI.authorizePurchase(action, args, callbackContext); //asyncronous call
+                    } catch (Exception error) {
+                        callbackContext.error(error.toString());
                     }
                     // Call the success function of the .js file
                 }
             });
             return true;
         }
-        if(action.equals("LoadWallet")){
+        else if(action.equals("AuthorizeCard")){
             cordova.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        loadWallet(action, callbackContext); //asyncronous call
+                        payWithOutUI.authorizeCard(action, args, callbackContext); //asyncronous call
+                    } catch (Exception error) {
+                        callbackContext.error(error.toString());
                     }
-                    catch (JSONException jsonException){
-                        callbackContext.error(jsonException.toString());
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("MakePayment")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithOutUI.makePayment(action, args, callbackContext); //asyncronous call
+                    } catch (Exception error) {
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+
+        else if(action.equals("LoadWallet")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithOutUI.loadWallet(action, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("ValidatePaymentCard")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithUI.validatePaymentCard(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("ValidateCard")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithOutUI.validateCard(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("Pay")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithUI.pay(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("PayWithToken")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithUI.payWithToken(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("PayWithCard")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithUI.payWithCard(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("PayWithWallet")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithUI.payWithWallet(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("PayWithWalletSDK")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithOutUI.payWithWalletSDK(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("PaymentStatus")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        payWithOutUI.paymentStatus(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
+                    }
+                    // Call the success function of the .js file
+                }
+            });
+            return true;
+        }
+        else if(action.equals("UserInformation")){
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        userInformation(action, args, callbackContext); //asyncronous call
+                    }
+                    catch (Exception error){
+                        callbackContext.error(error.toString());
                     }
                     // Call the success function of the .js file
                 }
@@ -82,67 +254,72 @@ public class PaymentPlugin extends CordovaPlugin {
         }
         return false;
     }
-    public void makePayment(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
-        payWithCard = new Button (cordova.getActivity());
-        Payment.overrideApiBase(Payment.QA_API_BASE); // used to override the payment api base url.
-        Passport.overrideApiBase(Passport.QA_API_BASE); //used to override the payment api base url.
-        Util.hideProgressDialog();
-        context = cordova.getActivity().getApplicationContext();
-        cordova.getActivity().runOnUiThread(new Runnable() {
+    public void userInformation(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException{
+        activity = this.cordova.getActivity();
+        activity.runOnUiThread(new Runnable() {
             public void run() {
-                final RequestOptions options = RequestOptions.builder().setClientId("IKIA14BAEA0842CE16CA7F9FED619D3ED62A54239276").setClientSecret("Z3HnVfCEadBLZ8SYuFvIQG52E472V3BQLh4XDKmgM2A=").build();
-                try{
-                    PurchaseRequest request = new PurchaseRequest(); // Setup request parameters
-                    request.setPan(args.getString(0)); //Card No or Token
-                    request.setAmount(args.getString(1)); // Amount in Naira
-                    request.setCvv2(args.getString(2));
-                    request.setPinData(args.getString(3)); // Optional Card PIN for card payment
-                    request.setTransactionRef(RandomString.numeric(12));
-                    request.setExpiryDate(args.getString(5));
-                    request.setCustomerId("1234567890");
-                    request.setCurrency("NGN");
-                    new PaymentSDK(context,options).purchase(request, new IswCallback<PurchaseResponse>() {
+                try {
+                    options = RequestOptions.builder().setClientId(clientId).setClientSecret(clientSecret).build();
+                    final LoginCredentials loginCredentials = new LoginCredentials();
+                    JSONObject params = args.getJSONObject(0);
+                    loginCredentials.setUsername(params.getString("username"));
+                    loginCredentials.setPassword(params.getString("password"));
+                    UserInfoRequest userInfoRequest = new UserInfoRequest();
+                    userInfoRequest.setUsername(loginCredentials.getUsername());
+                    new PassportSDK(activity, options).getUserInfo(userInfoRequest, new IswCallback<User>() {
+
                         @Override
                         public void onError(Exception error) {
                             callbackContext.error(error.getMessage());
                         }
 
                         @Override
-                        public void onSuccess(PurchaseResponse response) {
-                            // Check if OTP is required.
-                            if (StringUtils.hasText(response.getOtpTransactionIdentifier())) {
-                                callbackContext.success(response.getMessage());
+                        public void onSuccess(final User response) {
+                            if (response.getVerifiedMobileNo() == null) {
+                                //Send OTP
+                                new PassportSDK(activity, options).sendMobileOtp(response, new IswCallback<Object>() {
+                                    @Override
+                                    public void onError(Exception error) {
+                                        callbackContext.error(error.getMessage());
+                                    }
+
+                                    @Override
+                                    public void onSuccess(Object otpResponse) {
+                                        PluginUtils.getPluginResult(callbackContext, otpResponse);
+                                    }
+                                });
                             } else {
-                                callbackContext.success(response.getMessage());
+                                PluginUtils.getPluginResult(callbackContext, response);
                             }
                         }
                     });
-                }
-                catch (JSONException jsonException){
-                    callbackContext.error(jsonException.toString());
+                } catch (Exception error) {
+                    callbackContext.error(error.toString());
                 }
             }
         });
     }
-    public void loadWallet(final String action, final CallbackContext callbackContext) throws JSONException{
-        context = cordova.getActivity().getApplicationContext();
-        cordova.getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                final RequestOptions options = RequestOptions.builder().setClientId("IKIA14BAEA0842CE16CA7F9FED619D3ED62A54239276").setClientSecret("Z3HnVfCEadBLZ8SYuFvIQG52E472V3BQLh4XDKmgM2A=").build();
-                final WalletRequest request = new WalletRequest();
-                request.setTransactionRef(RandomString.numeric(12));
-                new WalletSDK(context, options).getPaymentMethods(request, new IswCallback<WalletResponse>() {
-                    @Override
-                    public void onError(Exception error) {
-                        callbackContext.error(error.getMessage());
-                    }
-                    @Override
-                    public void onSuccess(WalletResponse response) {
-                        PaymentMethod[] paymentMethods = response.getPaymentMethods();
-                        callbackContext.success(paymentMethods.length);
-                    }
-                });
+    private void init(JSONArray args, CallbackContext callbackContext) {
+        try{
+            if (args != null && args.length() > 0) {
+                JSONObject params = args.getJSONObject(0);
+                this.clientId=params.getString("clientId");
+                this.clientSecret=params.getString("clientSecret");
+                String paymentApi = params.getString("paymentApi");
+                String passportApi = params.getString("passportApi");
+                if( (paymentApi != null && paymentApi.length()>0) && (passportApi != null && passportApi.length()>0)){
+                    Payment.overrideApiBase(params.getString("paymentApi")); // used to override the payment api base url.
+                    Passport.overrideApiBase(params.getString("passportApi"));
+                }
+                if((clientId !=null && clientSecret != null) && (clientId !="" && clientSecret !="")){
+                    options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
+                    //callbackContext.success("Initialization was successfull");
+                }
             }
-        });
+        }
+        catch (JSONException jsonException){
+            callbackContext.error(jsonException.toString());
+        }
     }
+
 }
