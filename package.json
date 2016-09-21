@@ -1,5 +1,5 @@
 {
-  "name": "cordova-payment-plugin",
+  "name": "PaymentPlugin",
   "version": "0.0.1",
   "description": "Cordova Payment Plugin Powered by Interswitch",
   "cordova": {
@@ -35,13 +35,5 @@
   "license": "MIT",
   "devDependencies": {
     "jshint": "^2.6.0"
-  },
-  "bugs": {
-    "url": "https://github.com/techquest/cordova-payment-plugin/issues"
-  },
-  "homepage": "https://github.com/techquest/cordova-payment-plugin#readme",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
   }
 }
