@@ -8,6 +8,9 @@
     <repo></repo>
     <issue></issue>
 
+    <preference name="CLIENT_ID" default=""/>
+    <preference name="CLIENT_SECRET" default=""/>
+
     <js-module name="PaymentPlugin" src="www/PaymentPlugin.js">
         <clobbers target="PaymentPlugin" />
     </js-module>
@@ -18,6 +21,11 @@
             <feature name="PaymentPlugin" >
                 <param name="android-package" value="PaymentPlugin"/>
             </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <meta-data android:name="clientId" android:value="$CLIENT_ID"/>
+            <meta-data android:name="clientSecret" android:value="$CLIENT_SECRET"/>
         </config-file>
 
         <source-file src="src/android/PaymentPlugin.java" target-dir="src/" />
