@@ -59,9 +59,9 @@ cordova platform add android
 * **cd** to the directory of your cordova project. 
 
 * Add cordova payment plugin
-
+Replace clientId and clientSecret in the code below with your clientId and clientSecret
 ```
-cordova plugin add https://github.com/techquest/cordova-payment-plugin.git
+cordova plugin add https://github.com/techquest/cordova-payment-plugin.git --variable CLIENT_ID=clientId --variable CLIENT_SECRET=clientSecret
 ```
 
 * Add ```ios``` platform. Make sure to add the platform **after** adding the plugin.
@@ -126,8 +126,6 @@ During development of your app, you should use the Plugin in sandbox mode to ena
 ```javascript
     function init(){
         var userDetails = {
-            clientId: "IKIAF8F70479A6902D4BFF4E443EBF15D1D6CB19E232",
-            clientSecret: "ugsmiXPXOOvks9MR7+IFHSQSdk8ZzvwQMGvd0GJva30=",
             paymentApi : "https://sandbox.interswitchng.com",
             passportApi : "https://sandbox.interswitchng.com/passport"
         };
