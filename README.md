@@ -40,7 +40,7 @@ The first step to ​using the plugin is to register as a merchant. This is desc
 * Add the cordova-payment-plugin from CLI, using this command
 
 ```terminal
-cordova plugin add https://github.com/techquest/cordova-payment-plugin.git
+cordova plugin add https://github.com/techquest/cordova-payment-plugin.git --variable CLIENT_ID=clientId --variable CLIENT_SECRET=clientSecret
 ```
 
 * Add ```android``` platform. Make sure to add the platform **after** adding the plugin.
@@ -61,7 +61,7 @@ cordova platform add android
 * Add cordova payment plugin
 Replace clientId and clientSecret in the code below with your clientId and clientSecret
 ```
-cordova plugin add https://github.com/techquest/cordova-payment-plugin.git --variable CLIENT_ID=clientId --variable CLIENT_SECRET=clientSecret
+cordova plugin add https://github.com/techquest/cordova-payment-plugin.git
 ```
 
 * Add ```ios``` platform. Make sure to add the platform **after** adding the plugin.
