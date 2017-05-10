@@ -29,7 +29,7 @@ import android.content.pm.PackageManager;
  */
 
 public class PaymentPlugin extends CordovaPlugin  {
-	public PaymentPlugin() {
+    public PaymentPlugin() {
     }
     private String clientId;
     private String clientSecret;
@@ -44,7 +44,7 @@ public class PaymentPlugin extends CordovaPlugin  {
     //final RequestOptions options = RequestOptions.builder().setClientId(this.clientId).setClientSecret(this.clientSecret).build();
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
-		super.initialize(cordova, webView);
+        super.initialize(cordova, webView);
         activity =  cordova.getActivity();
         try{
             ApplicationInfo applicationInfo = activity.getPackageManager().getApplicationInfo(activity.getPackageName(), PackageManager.GET_META_DATA);
@@ -54,8 +54,8 @@ public class PaymentPlugin extends CordovaPlugin  {
         }catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-	}
-	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    }
+    public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
         final PayWithOutUI payWithOutUI = new PayWithOutUI(activity,clientId,clientSecret);
         final PayWithUI payWithUI = new PayWithUI(activity,clientId,clientSecret);
         if (action.equals("Init")) {
