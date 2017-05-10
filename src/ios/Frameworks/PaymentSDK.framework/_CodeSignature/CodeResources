@@ -6,43 +6,7 @@
 	<dict>
 		<key>Assets.car</key>
 		<data>
-		uJULAsKiRUMGKm9/JPRuMhNY/Eo=
-		</data>
-		<key>Frameworks/libswiftContacts.dylib</key>
-		<data>
-		UxUFduhtAxfFHdNQtWbXvp65RRI=
-		</data>
-		<key>Frameworks/libswiftCore.dylib</key>
-		<data>
-		6kN+4uRr+TVIC7Qu9WHukJeoV4Y=
-		</data>
-		<key>Frameworks/libswiftCoreGraphics.dylib</key>
-		<data>
-		swYFeI/z2zo4t3G/JavQiwULsZ0=
-		</data>
-		<key>Frameworks/libswiftCoreImage.dylib</key>
-		<data>
-		ploiuwdB6GPanEQf14C39Y/eEK8=
-		</data>
-		<key>Frameworks/libswiftDarwin.dylib</key>
-		<data>
-		plPYgV4oxdNj+Rq8HMBW1TdVZOk=
-		</data>
-		<key>Frameworks/libswiftDispatch.dylib</key>
-		<data>
-		/5/jrtvE3WzrQfeoP7yjpph07xY=
-		</data>
-		<key>Frameworks/libswiftFoundation.dylib</key>
-		<data>
-		Bij2Tdbb5oJahe/pD3wGnQXZ+OY=
-		</data>
-		<key>Frameworks/libswiftObjectiveC.dylib</key>
-		<data>
-		8nySepHpgOfkDX53OmOeNLVKEyw=
-		</data>
-		<key>Frameworks/libswiftUIKit.dylib</key>
-		<data>
-		QnBUzPv9l6DE/juh6KfIxOWDMJw=
+		TzhNUiI0MhoKf7S5IturiyDCX9k=
 		</data>
 		<key>Headers/Crypto.h</key>
 		<data>
@@ -50,7 +14,7 @@
 		</data>
 		<key>Headers/PaymentSDK-Swift.h</key>
 		<data>
-		YGUqiupouYA7VaUZMDDUUP2/6rs=
+		EucRMex+P3Fzcg6gb/hEM+dl+vQ=
 		</data>
 		<key>Headers/PaymentSDK.h</key>
 		<data>
@@ -58,23 +22,23 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		pG6nBxw4hJq4T3rnyaxEt82z/wc=
+		kv/Z4ATQfzWKVem+bhK2thLXFTg=
 		</data>
 		<key>Modules/PaymentSDK.swiftmodule/arm.swiftdoc</key>
 		<data>
-		r9UMSQMcLrW41e8EK0/4ujMKI20=
+		P3w2zrw0QW0gFrKIPmTvn8mghN4=
 		</data>
 		<key>Modules/PaymentSDK.swiftmodule/arm.swiftmodule</key>
 		<data>
-		WISun4cRPRE6mFBeXJztEyRfdmQ=
+		b/pz7CqyRB3hTtQixSGNY8/W4uI=
 		</data>
 		<key>Modules/PaymentSDK.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		3yMSj/COhPSoGppRSdDlyFdvOao=
+		Wrvx5xjD9z8a3g7fNvG2HNaCWNs=
 		</data>
 		<key>Modules/PaymentSDK.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		KcHaAHJht4Q+ENlcqwycDdq6+NA=
+		kNN6jsJ53uksOaR+4q0QQ/lyfN0=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -86,11 +50,11 @@
 		</data>
 		<key>PayWithCard.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
 		<data>
-		rmjnazkASkb/yT8tpGl9u06ewe4=
+		C75BFbJnxhquL8Zvx/SuTjj/TGY=
 		</data>
 		<key>PayWithCard.storyboardc/payWithCard.nib</key>
 		<data>
-		qTnrr4tfVrU4aJ5OtiYfX5Q5crg=
+		l5jDtF77BrqKu2h8DLNLWXxsJKU=
 		</data>
 		<key>PayWithCardOrWallet.storyboardc/Info.plist</key>
 		<data>
@@ -98,11 +62,11 @@
 		</data>
 		<key>PayWithCardOrWallet.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
 		<data>
-		EtnS+edAerw1Vz6H6nKtmANgNtI=
+		IJTQmKSykJhYbfNGAHIgZyTgS8w=
 		</data>
 		<key>PayWithCardOrWallet.storyboardc/payWithCardOrWallet.nib</key>
 		<data>
-		Nuw6p8o1HmVx1Vh/MGqzJKB8p58=
+		U3CtyUUV/Hr2e+Nc4cnLaJFFIBo=
 		</data>
 		<key>PayWithToken.storyboardc/Info.plist</key>
 		<data>
@@ -110,11 +74,11 @@
 		</data>
 		<key>PayWithToken.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
 		<data>
-		Lkf7ppg0ckavh+wTX5rxWoL7rjY=
+		/vBzR9cEeBL5OAymznJ0WETzzgg=
 		</data>
 		<key>PayWithToken.storyboardc/payWithToken.nib</key>
 		<data>
-		ZI94HO8Qoy0e9funfSH/HRA0xzM=
+		wZj3nD+eZiZgk1nvOEWwtG2Lt+s=
 		</data>
 		<key>PayWithWallet.storyboardc/Info.plist</key>
 		<data>
@@ -122,11 +86,11 @@
 		</data>
 		<key>PayWithWallet.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
 		<data>
-		RWO6EA08tqgR47qK+Q5WP+3j8XE=
+		/1ZCwnmk+QexSlTH71nqx2cbKo0=
 		</data>
 		<key>PayWithWallet.storyboardc/payWithWallet.nib</key>
 		<data>
-		86CABIsOgs2N0SY+CQ6DqWvB8GM=
+		PeESkFbD4LmSiecupdNcExNI3Os=
 		</data>
 		<key>ValidateCard.storyboardc/Info.plist</key>
 		<data>
@@ -134,147 +98,279 @@
 		</data>
 		<key>ValidateCard.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
 		<data>
-		qHkOdkUdd7szr6VW/WY8ED3tPyQ=
+		DI0qdHDJQoXqQBXTwjiqnokCpXs=
 		</data>
 		<key>ValidateCard.storyboardc/validateCard.nib</key>
 		<data>
-		tyCVWpa+NCfRs3mp8C5Tz/w4mxk=
+		QYKpujJQeHQ6fWAiKWUhcXdkJ7s=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
 		<key>Assets.car</key>
-		<data>
-		uJULAsKiRUMGKm9/JPRuMhNY/Eo=
-		</data>
-		<key>Frameworks/libswiftContacts.dylib</key>
-		<data>
-		UxUFduhtAxfFHdNQtWbXvp65RRI=
-		</data>
-		<key>Frameworks/libswiftCore.dylib</key>
-		<data>
-		6kN+4uRr+TVIC7Qu9WHukJeoV4Y=
-		</data>
-		<key>Frameworks/libswiftCoreGraphics.dylib</key>
-		<data>
-		swYFeI/z2zo4t3G/JavQiwULsZ0=
-		</data>
-		<key>Frameworks/libswiftCoreImage.dylib</key>
-		<data>
-		ploiuwdB6GPanEQf14C39Y/eEK8=
-		</data>
-		<key>Frameworks/libswiftDarwin.dylib</key>
-		<data>
-		plPYgV4oxdNj+Rq8HMBW1TdVZOk=
-		</data>
-		<key>Frameworks/libswiftDispatch.dylib</key>
-		<data>
-		/5/jrtvE3WzrQfeoP7yjpph07xY=
-		</data>
-		<key>Frameworks/libswiftFoundation.dylib</key>
-		<data>
-		Bij2Tdbb5oJahe/pD3wGnQXZ+OY=
-		</data>
-		<key>Frameworks/libswiftObjectiveC.dylib</key>
-		<data>
-		8nySepHpgOfkDX53OmOeNLVKEyw=
-		</data>
-		<key>Frameworks/libswiftUIKit.dylib</key>
-		<data>
-		QnBUzPv9l6DE/juh6KfIxOWDMJw=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			TzhNUiI0MhoKf7S5IturiyDCX9k=
+			</data>
+			<key>hash2</key>
+			<data>
+			llYooJRsVVDpgrnLpqJpsGDbWqv/xMWz0VcUe1CUhKA=
+			</data>
+		</dict>
 		<key>Headers/Crypto.h</key>
-		<data>
-		BtXCA4adffonWvPP3OfJgejEIy8=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			BtXCA4adffonWvPP3OfJgejEIy8=
+			</data>
+			<key>hash2</key>
+			<data>
+			RPMwkpWeWNw2bAFmnOy9Hd3CoYoN2kIhJtgNOzLJ9ok=
+			</data>
+		</dict>
 		<key>Headers/PaymentSDK-Swift.h</key>
-		<data>
-		YGUqiupouYA7VaUZMDDUUP2/6rs=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			EucRMex+P3Fzcg6gb/hEM+dl+vQ=
+			</data>
+			<key>hash2</key>
+			<data>
+			vNx4z7tJdyCQ5+KX8W1qzzA5kl0ZEsLdcvioUkoGC+8=
+			</data>
+		</dict>
 		<key>Headers/PaymentSDK.h</key>
-		<data>
-		U1QKcFFQ3wp2MxGJtltNRXJp5Ys=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			U1QKcFFQ3wp2MxGJtltNRXJp5Ys=
+			</data>
+			<key>hash2</key>
+			<data>
+			EsEEojgrhvDWg3rIGvRVQWnPWpT4DfRY1Fwn5KF2QTI=
+			</data>
+		</dict>
 		<key>Modules/PaymentSDK.swiftmodule/arm.swiftdoc</key>
-		<data>
-		r9UMSQMcLrW41e8EK0/4ujMKI20=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			P3w2zrw0QW0gFrKIPmTvn8mghN4=
+			</data>
+			<key>hash2</key>
+			<data>
+			vf+tNY21n4JJ0lcXq7H0Glj0tc5tcOs5yW2Nf557bF4=
+			</data>
+		</dict>
 		<key>Modules/PaymentSDK.swiftmodule/arm.swiftmodule</key>
-		<data>
-		WISun4cRPRE6mFBeXJztEyRfdmQ=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			b/pz7CqyRB3hTtQixSGNY8/W4uI=
+			</data>
+			<key>hash2</key>
+			<data>
+			JTV4mfsl4TvQ+ucDyqUWZAIlV5w1Wlv8iHTCCqBhC+U=
+			</data>
+		</dict>
 		<key>Modules/PaymentSDK.swiftmodule/arm64.swiftdoc</key>
-		<data>
-		3yMSj/COhPSoGppRSdDlyFdvOao=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			Wrvx5xjD9z8a3g7fNvG2HNaCWNs=
+			</data>
+			<key>hash2</key>
+			<data>
+			ttElxRs1S9HMAlVoNPfwYAHqfVCOikQD2xaxfXUhceo=
+			</data>
+		</dict>
 		<key>Modules/PaymentSDK.swiftmodule/arm64.swiftmodule</key>
-		<data>
-		KcHaAHJht4Q+ENlcqwycDdq6+NA=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			kNN6jsJ53uksOaR+4q0QQ/lyfN0=
+			</data>
+			<key>hash2</key>
+			<data>
+			QDL1RJdvcIU6yRt69P1qbfNQWeJcECS+XAiw9EvVfVQ=
+			</data>
+		</dict>
 		<key>Modules/module.modulemap</key>
-		<data>
-		QsznLj72VKfs4ZGNeQdjlYzVTpA=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			QsznLj72VKfs4ZGNeQdjlYzVTpA=
+			</data>
+			<key>hash2</key>
+			<data>
+			iGhC7vaQ7+/ZPooX9IjNYTWpG/K6rl/lY6uK5y7eusM=
+			</data>
+		</dict>
 		<key>PayWithCard.storyboardc/Info.plist</key>
-		<data>
-		V8n7N2Vs7jAHfGUvsU7DxM1NK0Y=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			V8n7N2Vs7jAHfGUvsU7DxM1NK0Y=
+			</data>
+			<key>hash2</key>
+			<data>
+			HCUxqpXKx9WnS/rDTNmLUmSnKRlophA/SPCj5yir3ZY=
+			</data>
+		</dict>
 		<key>PayWithCard.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
-		<data>
-		rmjnazkASkb/yT8tpGl9u06ewe4=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			C75BFbJnxhquL8Zvx/SuTjj/TGY=
+			</data>
+			<key>hash2</key>
+			<data>
+			hFvnijpWDugsHTJX/XYIvkYRbcQEgen5GJMDHxcBU/M=
+			</data>
+		</dict>
 		<key>PayWithCard.storyboardc/payWithCard.nib</key>
-		<data>
-		qTnrr4tfVrU4aJ5OtiYfX5Q5crg=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			l5jDtF77BrqKu2h8DLNLWXxsJKU=
+			</data>
+			<key>hash2</key>
+			<data>
+			cVPv0ZdSrLzydj/b3t5ZNywOna0h9O0pWtIc3nLBqZA=
+			</data>
+		</dict>
 		<key>PayWithCardOrWallet.storyboardc/Info.plist</key>
-		<data>
-		Lw5jge77u0mrn4CeLr29L2sYpS4=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			Lw5jge77u0mrn4CeLr29L2sYpS4=
+			</data>
+			<key>hash2</key>
+			<data>
+			3OBPCFG1XLzVvxvvo8fv30BZxUGQQKRERI4cUKhz8Dc=
+			</data>
+		</dict>
 		<key>PayWithCardOrWallet.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
-		<data>
-		EtnS+edAerw1Vz6H6nKtmANgNtI=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			IJTQmKSykJhYbfNGAHIgZyTgS8w=
+			</data>
+			<key>hash2</key>
+			<data>
+			Zgdv+f8fBTyyWjiQ1UFY2xd6I7I0WJMxXruxDM7uGUw=
+			</data>
+		</dict>
 		<key>PayWithCardOrWallet.storyboardc/payWithCardOrWallet.nib</key>
-		<data>
-		Nuw6p8o1HmVx1Vh/MGqzJKB8p58=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			U3CtyUUV/Hr2e+Nc4cnLaJFFIBo=
+			</data>
+			<key>hash2</key>
+			<data>
+			rL+Zc7AkbFfGcY9j2cA+fXga283x1t5m7oDLXzBZNm0=
+			</data>
+		</dict>
 		<key>PayWithToken.storyboardc/Info.plist</key>
-		<data>
-		RB893e/Y0EN5jbQKq3U5PyfZ9q0=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			RB893e/Y0EN5jbQKq3U5PyfZ9q0=
+			</data>
+			<key>hash2</key>
+			<data>
+			zSqH6WTkpa7qTgL3zVmPBvIOl9If6UL5aSR6anu1hUw=
+			</data>
+		</dict>
 		<key>PayWithToken.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
-		<data>
-		Lkf7ppg0ckavh+wTX5rxWoL7rjY=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			/vBzR9cEeBL5OAymznJ0WETzzgg=
+			</data>
+			<key>hash2</key>
+			<data>
+			n5d+cx7+2rkr0PPmX4zivENM3RQ1jt1exnepj5pPivY=
+			</data>
+		</dict>
 		<key>PayWithToken.storyboardc/payWithToken.nib</key>
-		<data>
-		ZI94HO8Qoy0e9funfSH/HRA0xzM=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			wZj3nD+eZiZgk1nvOEWwtG2Lt+s=
+			</data>
+			<key>hash2</key>
+			<data>
+			V92WCgdMTuXsuie0xhiujp+aIOOTtLverJTCVW0zTbk=
+			</data>
+		</dict>
 		<key>PayWithWallet.storyboardc/Info.plist</key>
-		<data>
-		3ZeKTaToqMM1XQjRZACmzQxeDaE=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			3ZeKTaToqMM1XQjRZACmzQxeDaE=
+			</data>
+			<key>hash2</key>
+			<data>
+			y2cBL8zvC6UOb1nIbe/OITk4upTiPNTjSHcL/pkXdNc=
+			</data>
+		</dict>
 		<key>PayWithWallet.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
-		<data>
-		RWO6EA08tqgR47qK+Q5WP+3j8XE=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			/1ZCwnmk+QexSlTH71nqx2cbKo0=
+			</data>
+			<key>hash2</key>
+			<data>
+			AbFYZFOX+RsnoKgG1qi8taTov2v09BohPwyPolJYTng=
+			</data>
+		</dict>
 		<key>PayWithWallet.storyboardc/payWithWallet.nib</key>
-		<data>
-		86CABIsOgs2N0SY+CQ6DqWvB8GM=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			PeESkFbD4LmSiecupdNcExNI3Os=
+			</data>
+			<key>hash2</key>
+			<data>
+			rrmSqC1ubZqh/mYVRcHk3pQhbQwoZJic5i4dgxTvGqk=
+			</data>
+		</dict>
 		<key>ValidateCard.storyboardc/Info.plist</key>
-		<data>
-		55Ey/2P0ko3nttiOOrbQhBBqewI=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			55Ey/2P0ko3nttiOOrbQhBBqewI=
+			</data>
+			<key>hash2</key>
+			<data>
+			AJADAaLhZqa94dT8Ua1M9Yf2svNG5Tbaqgn+I5tgZM4=
+			</data>
+		</dict>
 		<key>ValidateCard.storyboardc/UYd-9z-ZDH-view-L96-Be-gsL.nib</key>
-		<data>
-		qHkOdkUdd7szr6VW/WY8ED3tPyQ=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			DI0qdHDJQoXqQBXTwjiqnokCpXs=
+			</data>
+			<key>hash2</key>
+			<data>
+			39sfjZjmWjRV1NuhpbihOzx44MK5a8FYO11OiVNj7Ok=
+			</data>
+		</dict>
 		<key>ValidateCard.storyboardc/validateCard.nib</key>
-		<data>
-		tyCVWpa+NCfRs3mp8C5Tz/w4mxk=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			QYKpujJQeHQ6fWAiKWUhcXdkJ7s=
+			</data>
+			<key>hash2</key>
+			<data>
+			ZdqH5gTn7DqieVZy7ty7hDzOE4r5vqcb6E/loINV+JI=
+			</data>
+		</dict>
 	</dict>
 	<key>rules</key>
 	<dict>

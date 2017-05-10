@@ -58,11 +58,6 @@ public class Utils {
                 purchaseResponseAsDict["cardType"] = theCardType
             }
         }
-        if let theBalance = purchaseResObj.balance {
-            if theBalance.characters.count > 0 {
-                purchaseResponseAsDict["balance"] = theBalance
-            }
-        }
         if let otpTransactionIdentifier = purchaseResObj.otpTransactionIdentifier {
             if otpTransactionIdentifier.characters.count > 0 {
                 purchaseResponseAsDict["otpTransactionIdentifier"] = otpTransactionIdentifier
