@@ -55,7 +55,7 @@ cordova platform add android
 
 
 ## <a name='InstallationInstructionsForIos'></a>Plugin installation instructions for iOS
-* You'll need to have **Xcode 7.3** or later installed.
+* You'll need to have **Xcode 8.3.2** or later installed.
 
 * **cd** to the directory of your cordova project. 
 
@@ -101,10 +101,10 @@ use_frameworks!
 * Add the following to the **Podfile**, inside the first ```target``` block.
 
 ```
-pod 'CryptoSwift'
-pod 'Alamofire', :git => 'https://github.com/Alamofire/Alamofire.git'
-pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
-pod 'OpenSSL'
+pod 'CryptoSwift', '0.6.9'
+pod 'Alamofire', :git => 'https://github.com/Alamofire/Alamofire.git', :tag => '4.4.0'
+pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git', :tag => '3.1.4'
+pod 'OpenSSL-Universal', '1.0.2.10'
 ```
 
 * Now run:
