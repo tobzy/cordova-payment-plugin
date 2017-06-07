@@ -6,21 +6,21 @@ import UIKit
 import PaymentSDK
 
 
-public class PayWithUI {
-    private static var cdvPlugin : PaymentPlugin?
-    private static var currentVc : UIViewController?
-    private static var isSdkVcShownUsingWindow  = false
-    private static var window : UIWindow?
+open class PayWithUI {
+    fileprivate static var cdvPlugin : PaymentPlugin?
+    fileprivate static var currentVc : UIViewController?
+    fileprivate static var isSdkVcShownUsingWindow  = false
+    fileprivate static var window : UIWindow?
     
     
-    class func payWithCardOrWallet(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
-                           theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
+    class func payWithCardOrWallet(_ cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
+                                   theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
         let payWithCardOrWallet = Pay(clientId: cdvPlugin.clientId, clientSecret: cdvPlugin.clientSecret,
                                       customerId: theCustomerId, description: theDescription, amount:theAmount, currency:theCurrency)
         
-        let vc = payWithCardOrWallet.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
+        let vc = payWithCardOrWallet.start({(purchaseResponse: PurchaseResponse?, error: Error?) in
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
@@ -57,8 +57,8 @@ public class PayWithUI {
         currentVc = navController
         isSdkVcShownUsingWindow = true
     }
-
-    class func payWithCard(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
+    
+    class func payWithCard(_ cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
                            theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
@@ -66,7 +66,7 @@ public class PayWithUI {
                                       customerId: theCustomerId, description: theDescription,
                                       amount:theAmount, currency:theCurrency)
         
-        let vc = payWithCard.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
+        let vc = payWithCard.start({(purchaseResponse: PurchaseResponse?, error: Error?) in
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
@@ -98,14 +98,14 @@ public class PayWithUI {
         isSdkVcShownUsingWindow = false
     }
     
-    class func payWithWallet(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
+    class func payWithWallet(_ cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand,
                              theCustomerId: String, theCurrency:String, theDescription:String, theAmount:String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
         let payWithWallet = PayWithWallet(clientId: cdvPlugin.clientId, clientSecret: cdvPlugin.clientSecret,
                                           customerId: theCustomerId, description: theDescription,
                                           amount: theAmount, currency: theCurrency)
-        let vc = payWithWallet.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
+        let vc = payWithWallet.start({(purchaseResponse: PurchaseResponse?, error: Error?) in
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
@@ -147,7 +147,7 @@ public class PayWithUI {
         isSdkVcShownUsingWindow = true
     }
     
-    class func payWithToken(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
+    class func payWithToken(_ cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String, paymentDescription:String,
                             theToken:String, theAmount:String, theCurrency:String, theExpiryDate:String, theCardType:String, thePanLast4Digits:String){
         PayWithUI.cdvPlugin = cdvPlugin
         
@@ -156,7 +156,7 @@ public class PayWithUI {
                                         amount:theAmount, token: theToken, currency:theCurrency,
                                         expiryDate: theExpiryDate, cardType: theCardType, last4Digits: thePanLast4Digits)
         
-        let vc = payWithToken.start({(purchaseResponse: PurchaseResponse?, error: NSError?) in
+        let vc = payWithToken.start({(purchaseResponse: PurchaseResponse?, error: Error?) in
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
@@ -188,12 +188,12 @@ public class PayWithUI {
         isSdkVcShownUsingWindow = false
     }
     
-    class func validatePaymentCard(cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String) {
+    class func validatePaymentCard(_ cdvPlugin: PaymentPlugin, command: CDVInvokedUrlCommand, theCustomerId: String) {
         PayWithUI.cdvPlugin = cdvPlugin
         
         let validateCard = ValidateCard(clientId: cdvPlugin.clientId, clientSecret: cdvPlugin.clientSecret, customerId: theCustomerId)
         
-        let vc = validateCard.start({(validateCardResponse: ValidateCardResponse?, error: NSError?) in
+        let vc = validateCard.start({(validateCardResponse: ValidateCardResponse?, error: Error?) in
             guard error == nil else {
                 let errMsg = (error?.localizedDescription)!
                 
@@ -230,8 +230,8 @@ public class PayWithUI {
         currentVc!.view.endEditing(true)
     }
     
-    class func addBackNavigationMenuItem(currentlyDisplayedVc: UIViewController) {
-        let leftButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(PayWithUI.backAction))
+    class func addBackNavigationMenuItem(_ currentlyDisplayedVc: UIViewController) {
+        let leftButton = UIBarButtonItem(title: "Back", style: UIBarButtonItemStyle.plain, target: self, action: #selector(PayWithUI.backAction))
         
         //currentlyDisplayedVc.navigationItem.title = "Pay"
         currentlyDisplayedVc.navigationItem.leftBarButtonItem = leftButton
@@ -242,7 +242,7 @@ public class PayWithUI {
             window?.rootViewController = cdvPlugin?.viewController!
             window?.makeKeyAndVisible()
         } else {
-            currentVc?.dismissViewControllerAnimated(true, completion: nil)
+            currentVc?.dismiss(animated: true, completion: nil)
         }
     }
 }
