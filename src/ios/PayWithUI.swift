@@ -30,7 +30,7 @@ open class PayWithUI {
                 return
             }
             guard let response = purchaseResponse else {
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 window?.rootViewController = cdvPlugin.viewController!
@@ -48,7 +48,7 @@ open class PayWithUI {
         //addBackNavigationMenuItem(vc)
         
         if(window == nil) {
-            if let app = UIApplication.sharedApplication().delegate as? CDVAppDelegate, let keyWindow = app.window {
+            if let app = UIApplication.shared.delegate as? CDVAppDelegate, let keyWindow = app.window {
                 window = keyWindow
             }
         }
@@ -71,20 +71,20 @@ open class PayWithUI {
                 let errMsg = (error?.localizedDescription)!
                 
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
-                cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+                cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
                 return
             }
             guard let response = purchaseResponse else {
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
-                cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+                cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
                 return
             }
             
             //Handling success
             Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+            cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
         })
         
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -93,7 +93,7 @@ open class PayWithUI {
         let navController = UINavigationController(rootViewController: vc)
         //addBackNavigationMenuItem(vc)
         
-        cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
+        cdvPlugin.viewController?.present(navController, animated: true, completion: nil)
         currentVc = navController
         isSdkVcShownUsingWindow = false
     }
@@ -116,7 +116,7 @@ open class PayWithUI {
             }
             
             guard let response = purchaseResponse else {
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 window?.rootViewController = cdvPlugin.viewController!
@@ -136,7 +136,7 @@ open class PayWithUI {
         //addBackNavigationMenuItem(vc)
         
         if(window == nil) {
-            if let app = UIApplication.sharedApplication().delegate as? CDVAppDelegate, let keyWindow = app.window {
+            if let app = UIApplication.shared.delegate as? CDVAppDelegate, let keyWindow = app.window {
                 window = keyWindow
             }
         }
@@ -161,20 +161,20 @@ open class PayWithUI {
                 let errMsg = (error?.localizedDescription)!
                 
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
-                cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+                cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
                 return
             }
             guard let response = purchaseResponse else {
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
-                cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+                cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
                 return
             }
             
             //Handling success
             Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+            cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
         })
         
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -183,7 +183,7 @@ open class PayWithUI {
         let navController = UINavigationController(rootViewController: vc)
         //addBackNavigationMenuItem(vc)
         
-        cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
+        cdvPlugin.viewController?.present(navController, animated: true, completion: nil)
         currentVc = navController
         isSdkVcShownUsingWindow = false
     }
@@ -198,20 +198,20 @@ open class PayWithUI {
                 let errMsg = (error?.localizedDescription)!
                 
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: errMsg)
-                cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+                cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
                 return
             }
             
             guard let response = validateCardResponse else {
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
-                cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+                cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
                 return
             }
             //Handling success
             Utils.sendSuccessBackToJavascript(cdvPlugin, cdvCommand: command, successMsg: Utils.getJsonOfPurchaseResponse(response))
-            cdvPlugin.viewController?.dismissViewControllerAnimated(true, completion: nil)
+            cdvPlugin.viewController?.dismiss(animated: true, completion: nil)
         })
         
         let screenTap : UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -220,7 +220,7 @@ open class PayWithUI {
         let navController = UINavigationController(rootViewController: vc)
         //addBackNavigationMenuItem(vc)
         
-        cdvPlugin.viewController?.presentViewController(navController, animated: true, completion: nil)
+        cdvPlugin.viewController?.present(navController, animated: true, completion: nil)
         currentVc = navController
         isSdkVcShownUsingWindow = false
     }

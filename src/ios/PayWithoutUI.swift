@@ -31,7 +31,7 @@ open class PayWithoutUI {
             guard let response = purchaseResponse else {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 return
             }
@@ -57,7 +57,7 @@ open class PayWithoutUI {
             guard let walletResponse = response else {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 return
             }
@@ -93,7 +93,7 @@ open class PayWithoutUI {
             guard let response = purchaseResponse else {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 return
             }
@@ -120,7 +120,7 @@ open class PayWithoutUI {
             guard let response = paymentStatusResponse else {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 return
             }
@@ -150,7 +150,7 @@ open class PayWithoutUI {
             guard let response = validateCardResponse else {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 
-                let failureMsg = (error?.localizedFailureReason)!
+                let failureMsg = (error?.localizedDescription)!
                 Utils.sendErrorBackToJavascript(cdvPlugin, cdvCommand: command, errMsg: failureMsg)
                 return
             }

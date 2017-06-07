@@ -22,13 +22,13 @@ open class Utils {
     }
     
     class func sendErrorBackToJavascript(_ cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, errMsg: String) {
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAsString: errMsg)
-        cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: errMsg)
+        cdvPlugin.commandDelegate!.send(pluginResult, callbackId: cdvCommand.callbackId)
     }
     
     class func sendSuccessBackToJavascript(_ cdvPlugin: PaymentPlugin, cdvCommand: CDVInvokedUrlCommand, successMsg: String) {
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsString: successMsg)
-        cdvPlugin.commandDelegate!.sendPluginResult(pluginResult, callbackId: cdvCommand.callbackId)
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: successMsg)
+        cdvPlugin.commandDelegate!.send(pluginResult, callbackId: cdvCommand.callbackId)
     }
     
     class open func getJsonOfPurchaseResponse(_ purchaseResObj : PurchaseResponse) -> String {
@@ -125,6 +125,6 @@ open class Utils {
         let action = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil)
         alertVc.addAction(action)
         
-        cdvPlugin.viewController?.presentViewController(alertVc, animated: true, completion: nil)
+        cdvPlugin.viewController?.present(alertVc, animated: true, completion: nil)
     }
 }
